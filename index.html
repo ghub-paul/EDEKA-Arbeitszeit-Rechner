@@ -128,7 +128,7 @@
 
             <div class="checkbox-group">
                 <input type="checkbox" id="breakfast-toggle">
-                <label for="breakfast-toggle"><b>Frühstückspause gemacht?</b><br>Zusätzlich 25 Min. Pause.</label>
+                <label for="breakfast-toggle"><b>Frühstückspause gemacht?</b><br>Zusätzlich 25 Min. <i>später</i> gehen.</label>
             </div>
 
             <button onclick="calculateFeierabend()">Berechnen</button>
@@ -138,7 +138,7 @@
         <div class="calculator">
             <h1>Ist-Zeit Rechner</h1>
             <div class="info-details">
-                Eingabe deiner Intervalle (z.B. 07:00-12:00 und 12:30-16:00).
+                Eingabe deiner Intervalle. Die Lücke dazwischen gilt als Pause.
             </div>
             <label>1. Intervall:</label>
             <div style="display:flex; gap:5px;">
@@ -147,6 +147,11 @@
             <label>2. Intervall:</label>
             <div style="display:flex; gap:5px;">
                 <input type="time" id="b2-s"> bis <input type="time" id="b2-e">
+            </div>
+
+            <div class="checkbox-group">
+                <input type="checkbox" id="breakfast-toggle-ist">
+                <label for="breakfast-toggle-ist"><b>Frühstückspause abziehen?</b><br>Zieht 25 Min. von der Nettozeit ab.</label>
             </div>
             
             <label>Tages-Soll (Dezimal):</label>
@@ -209,22 +214,30 @@
         const s2 = document.getElementById('b2-s').value;
         const e2 = document.getElementById('b2-e').value;
         const soll = parseFloat(document.getElementById('soll-input').value);
+        const hasBreakfast = document.getElementById('breakfast-toggle-ist').checked;
 
         const tMin = (t) => { if(!t) return 0; const [h, m] = t.split(':').map(Number); return h * 60 + m; };
 
         let m1 = tMin(e1) - tMin(s1); if(m1 < 0) m1 += 1440;
         let m2 = tMin(e2) - tMin(s2); if(m2 < 0) m2 += 1440;
         
-        let totalNettoH = parseFloat(((m1 + m2) / 60).toFixed(2));
+        // Netto-Arbeitszeit berechnen
+        let totalNettoMin = (m1 + m2);
+        
+        // Falls Frühstückspause angeklickt, ziehe sie von der Arbeitszeit ab
+        if(hasBreakfast) {
+            totalNettoMin -= 25;
+        }
+
+        let totalNettoH = parseFloat((totalNettoMin / 60).toFixed(2));
         let diff = parseFloat((totalNettoH - soll).toFixed(2));
 
         let resDiv = document.getElementById('int-res');
-        
-        // Farblogik korrigiert: Neutral bei 0.00
         resDiv.className = 'result';
+        
         if (Math.abs(diff) < 0.01) {
             resDiv.classList.add('neutral');
-            diff = 0; // Saubere Anzeige von 0 statt -0.0
+            diff = 0;
         } else if (diff > 0) {
             resDiv.classList.add('positive');
         } else {
@@ -232,7 +245,7 @@
         }
         
         let warn = totalNettoH > 10 ? '<div class="warning-box">Achtung: Tageshöchstzeit überschritten!</div>' : '';
-        resDiv.innerHTML = `Ist: ${totalNettoH.toFixed(2)}h (Soll: ${soll}h)<br><b>Differenz: ${diff > 0 ? '+' : ''}${diff.toFixed(2)}h</b>${warn}`;
+        resDiv.innerHTML = `Netto: ${totalNettoH.toFixed(2)}h (Soll: ${soll}h)<br><b>Saldo: ${diff > 0 ? '+' : ''}${diff.toFixed(2)}h</b>${warn}`;
     }
 
     function handleConversion() {
