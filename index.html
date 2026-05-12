@@ -39,7 +39,7 @@
         }
         .calculator {
             width: 30%; 
-            min-width: 310px; 
+            min-width: 320px; 
             padding: 20px;
             background-color: #ffffff;
             border-radius: 8px;
@@ -75,19 +75,48 @@
             font-size: 16px;
         }
         button:hover { background-color: #f0c300; }
-        
-        .checkbox-group {
-            display: flex;
-            align-items: center;
-            gap: 10px;
+
+        /* Schieberegler (Switch) Styling */
+        .switch-container {
             background: #fff9e6;
-            padding: 10px;
+            padding: 12px;
             border-radius: 5px;
             margin-bottom: 15px;
             border: 1px solid #ffeeba;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-        .checkbox-group input { width: auto; margin: 0; cursor: pointer; }
-        .checkbox-group label { margin: 0; cursor: pointer; font-size: 13px; font-weight: 400; line-height: 1.2; }
+        .switch-label { font-size: 13px; font-weight: 600; line-height: 1.2; color: #555; padding-right: 10px; }
+        .switch-label i { font-weight: 400; font-size: 11px; display: block; margin-top: 2px; }
+        
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 26px;
+            flex-shrink: 0;
+        }
+        .switch input { opacity: 0; width: 0; height: 0; margin: 0; }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 26px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px; width: 18px;
+            left: 4px; bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider { background-color: #008000; }
+        input:checked + .slider:before { transform: translateX(24px); }
 
         .result {
             text-align: center;
@@ -114,61 +143,67 @@
         <div class="calculator">
             <h1>Feierabend-Planer</h1>
             <div class="info-details">
-                Mo-Do 8,42h / Fr 4,83h.<br>Rechnet die Endzeit inkl. Pausen aus.
+                Mo-Do 8,42h / Fr 4,83h.<br>BV 2026: Gesetzliche Pause wird automatisch addiert.
             </div>
             
-            <label>Heute angefangen um:</label>
+            <label>Startzeit:</label>
             <input type="time" id="start-time" onchange="saveStartTime()">
             
-            <label>Wochentag:</label>
+            <label>Tag:</label>
             <select id="day-mode">
-                <option value="8.42">Montag - Donnerstag (Soll 8.42h)</option>
-                <option value="4.83">Freitag (Soll 4.83h)</option>
+                <option value="8.42">Montag - Donnerstag (Langer Tag)</option>
+                <option value="4.83">Freitag (Kurzer Tag)</option>
             </select>
 
-            <div class="checkbox-group">
-                <input type="checkbox" id="breakfast-toggle">
-                <label for="breakfast-toggle"><b>Frühstückspause gemacht?</b><br>Ja (+25 Min später gehen)</label>
+            <div class="switch-container">
+                <div class="switch-label">Frühstückspause gemacht? <i>(Addiert 25 Min. zur Endzeit)</i></div>
+                <label class="switch">
+                    <input type="checkbox" id="breakfast-toggle">
+                    <span class="slider"></span>
+                </label>
             </div>
 
             <button onclick="calculateFeierabend()">Berechnen</button>
-            <div id="end-res" class="result neutral">Bitte Zeit eingeben</div>
+            <div id="end-res" class="result neutral">---</div>
         </div>
 
         <div class="calculator">
             <h1>Ist-Zeit Rechner</h1>
             <div class="info-details">
-                Eingabe deiner Intervalle. Die Lücke dazwischen wird automatisch als Pause erkannt.
+                Intervalle aus der Erfassung. Lücke dazwischen = Pause.
             </div>
-            <label>1. Intervall:</label>
+            <label>Block 1:</label>
             <div style="display:flex; gap:5px;">
                 <input type="time" id="b1-s"> bis <input type="time" id="b1-e">
             </div>
-            <label>2. Intervall:</label>
+            <label>Block 2:</label>
             <div style="display:flex; gap:5px;">
                 <input type="time" id="b2-s"> bis <input type="time" id="b2-e">
             </div>
 
-            <div class="checkbox-group">
-                <input type="checkbox" id="breakfast-toggle-ist">
-                <label for="breakfast-toggle-ist"><b>Frühstückspause gemacht?</b><br>Ja (-25 Min Arbeitszeit)</label>
+            <div class="switch-container">
+                <div class="switch-label">Frühstückspause gemacht? <i>(Zieht 25 Min. von Arbeitszeit ab)</i></div>
+                <label class="switch">
+                    <input type="checkbox" id="breakfast-toggle-ist">
+                    <span class="slider"></span>
+                </label>
             </div>
             
-            <label>Tages-Soll (Dezimal):</label>
+            <label>Tages-Soll heute:</label>
             <input type="number" id="soll-input" value="8.42" step="0.01">
             
             <button onclick="calculateIntervalWork()">Saldo berechnen</button>
-            <div id="int-res" class="result neutral">Warte auf Eingabe...</div>
+            <div id="int-res" class="result neutral">---</div>
         </div>
 
         <div class="calculator">
-            <h1>Dezimal-Wandler</h1>
+            <h1>Umwandler</h1>
             <label>Zeit in h:mm</label>
             <div style="display:flex; gap:5px;">
                 <input type="number" id="conv-h" placeholder="Std">
                 <input type="number" id="conv-m" placeholder="Min">
             </div>
-            <label>Oder Dezimalwert:</label>
+            <label>Oder Dezimal:</label>
             <input type="number" id="conv-dec" step="0.01" placeholder="z.B. 8.42">
             
             <button onclick="handleConversion()">Umrechnen</button>
@@ -176,7 +211,7 @@
         </div>
     </div>
 
-    <div class="footer">EDEKA IT Standort Würzburg | BV 2026</div>
+    <div class="footer">EDEKA IT Standort Würzburg | BV April 2026</div>
 
 <script>
     function saveStartTime() {
@@ -202,10 +237,10 @@
         let endH = Math.floor(totalMin / 60) % 24;
         let endM = Math.round(totalMin % 60);
         
-        let warn = (soll > 10) ? '<div class="warning-box">BV § 3.3 Warnung: > 10h Arbeitszeit!</div>' : '';
+        let warn = (soll > 10) ? '<div class="warning-box">Vorsicht: > 10h Netto-Arbeitszeit!</div>' : '';
 
         document.getElementById('end-res').innerHTML = 
-            `Geplantes Ende: <b style="font-size:1.2em;">${String(endH).padStart(2,'0')}:${String(endM).padStart(2,'0')} Uhr</b>${warn}`;
+            `Feierabend um:<br><b style="font-size:1.25em;">${String(endH).padStart(2,'0')}:${String(endM).padStart(2,'0')} Uhr</b>${warn}`;
     }
 
     function calculateIntervalWork() {
@@ -222,11 +257,7 @@
         let m2 = tMin(e2) - tMin(s2); if(m2 < 0) m2 += 1440;
         
         let totalNettoMin = (m1 + m2);
-        
-        // Wenn Frühstück gemacht wurde, ziehe diese Zeit von der Netto-Arbeitszeit ab
-        if(hasBreakfast) {
-            totalNettoMin -= 25;
-        }
+        if(hasBreakfast) totalNettoMin -= 25;
 
         let totalNettoH = parseFloat((totalNettoMin / 60).toFixed(2));
         let diff = parseFloat((totalNettoH - soll).toFixed(2));
