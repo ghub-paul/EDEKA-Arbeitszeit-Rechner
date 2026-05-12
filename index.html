@@ -114,7 +114,7 @@
         <div class="calculator">
             <h1>Feierabend-Planer</h1>
             <div class="info-details">
-                Mo-Do 8,42h / Fr 4,83h.<br>Pausen BV: 30m ab 6h / 45m ab 9h.
+                Mo-Do 8,42h / Fr 4,83h.<br>Rechnet die Endzeit inkl. Pausen aus.
             </div>
             
             <label>Heute angefangen um:</label>
@@ -128,7 +128,7 @@
 
             <div class="checkbox-group">
                 <input type="checkbox" id="breakfast-toggle">
-                <label for="breakfast-toggle"><b>Frühstückspause gemacht?</b><br>Zusätzlich 25 Min. <i>später</i> gehen.</label>
+                <label for="breakfast-toggle"><b>Frühstückspause gemacht?</b><br>Ja (+25 Min später gehen)</label>
             </div>
 
             <button onclick="calculateFeierabend()">Berechnen</button>
@@ -138,7 +138,7 @@
         <div class="calculator">
             <h1>Ist-Zeit Rechner</h1>
             <div class="info-details">
-                Eingabe deiner Intervalle. Die Lücke dazwischen gilt als Pause.
+                Eingabe deiner Intervalle. Die Lücke dazwischen wird automatisch als Pause erkannt.
             </div>
             <label>1. Intervall:</label>
             <div style="display:flex; gap:5px;">
@@ -151,7 +151,7 @@
 
             <div class="checkbox-group">
                 <input type="checkbox" id="breakfast-toggle-ist">
-                <label for="breakfast-toggle-ist"><b>Frühstückspause abziehen?</b><br>Zieht 25 Min. von der Nettozeit ab.</label>
+                <label for="breakfast-toggle-ist"><b>Frühstückspause gemacht?</b><br>Ja (-25 Min Arbeitszeit)</label>
             </div>
             
             <label>Tages-Soll (Dezimal):</label>
@@ -221,10 +221,9 @@
         let m1 = tMin(e1) - tMin(s1); if(m1 < 0) m1 += 1440;
         let m2 = tMin(e2) - tMin(s2); if(m2 < 0) m2 += 1440;
         
-        // Netto-Arbeitszeit berechnen
         let totalNettoMin = (m1 + m2);
         
-        // Falls Frühstückspause angeklickt, ziehe sie von der Arbeitszeit ab
+        // Wenn Frühstück gemacht wurde, ziehe diese Zeit von der Netto-Arbeitszeit ab
         if(hasBreakfast) {
             totalNettoMin -= 25;
         }
@@ -245,7 +244,7 @@
         }
         
         let warn = totalNettoH > 10 ? '<div class="warning-box">Achtung: Tageshöchstzeit überschritten!</div>' : '';
-        resDiv.innerHTML = `Netto: ${totalNettoH.toFixed(2)}h (Soll: ${soll}h)<br><b>Saldo: ${diff > 0 ? '+' : ''}${diff.toFixed(2)}h</b>${warn}`;
+        resDiv.innerHTML = `Ist: ${totalNettoH.toFixed(2)}h (Soll: ${soll}h)<br><b>Saldo: ${diff > 0 ? '+' : ''}${diff.toFixed(2)}h</b>${warn}`;
     }
 
     function handleConversion() {
