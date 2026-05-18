@@ -56,24 +56,26 @@
     <img src="https://citycenter.de/wp-content/uploads/2021/06/logo-edeka-eisenhuettenstadt.png" alt="EDEKA" class="header-logo">
 
     <div class="container">
+        <!-- Feierabend-Planer -->
         <div class="calculator">
             <h1>Feierabend-Planer</h1>
             <div class="info-details">Berücksichtigt gesetzliche Pausen (30m/45m) + EDEKA Frühstückspause.</div>
             <label>Startzeit:</label>
-            <input type="time" id="start-time" onchange="saveData()">
+            <input type="time" id="start-time" onchange="saveData(); syncStartToBlock();">
             <label>Tagessoll:</label>
-            <select id="day-mode">
+            <select id="day-mode" onchange="calculateFeierabend()">
                 <option value="8.42">Mo - Do (8.42h)</option>
                 <option value="4.83">Freitag (4.83h)</option>
             </select>
             <div class="switch-container">
                 <div class="switch-label">Frühstückspause? (+25 Min.)</div>
-                <label class="switch"><input type="checkbox" id="breakfast-toggle"><span class="slider"></span></label>
+                <label class="switch"><input type="checkbox" id="breakfast-toggle" onchange="calculateFeierabend()"><span class="slider"></span></label>
             </div>
             <button onclick="calculateFeierabend()">Wann kann ich gehen?</button>
             <div id="end-res" class="result neutral">---</div>
         </div>
 
+        <!-- Ist-Zeit Rechner -->
         <div class="calculator">
             <h1>Ist-Zeit Rechner</h1>
             <div class="info-details">Trage deine Zeitblöcke ein. Das Tool checkt die Pausenvorgaben.</div>
@@ -91,6 +93,7 @@
             <div id="int-res" class="result neutral">---</div>
         </div>
 
+        <!-- Wochen-Monitor -->
         <div class="calculator">
             <h1>Wochen-Monitor</h1>
             <div class="info-details">Eingabe in Dezimal (z.B. 8.42). Speichert automatisch.</div>
@@ -105,15 +108,16 @@
             <div id="week-res" class="result neutral">Ziel: 38.50h</div>
         </div>
 
+        <!-- Umwandler -->
         <div class="calculator">
             <h1>Umwandler</h1>
             <label>h:mm ➔ Dezimal</label>
             <div style="display:flex; gap:5px;">
-                <input type="number" id="conv-h" placeholder="Std">
-                <input type="number" id="conv-m" placeholder="Min">
+                <input type="number" id="conv-h" placeholder="Std" oninput="clearDecField()">
+                <input type="number" id="conv-m" placeholder="Min" oninput="clearDecField()">
             </div>
             <label>Dezimal ➔ h:mm</label>
-            <input type="number" id="conv-dec" step="0.01" placeholder="z.B. 8.42">
+            <input type="number" id="conv-dec" step="0.01" placeholder="z.B. 8.42" oninput="clearHmFields()">
             <button onclick="handleConversion()">Umrechnen</button>
             <div id="dec-res" class="result neutral">---</div>
         </div>
@@ -122,11 +126,11 @@
     <div class="footer">EDEKA IT Standort Würzburg | BV 2026</div>
 
 <script>
-    // Hilfsfunktion: Zeit-String (HH:MM) in Minuten umwandeln
+    // Hilfsfunktion: Zeit-String (HH:MM) präzise in Minuten umwandeln
     const tToMin = (t) => { 
         if(!t || t === "") return null; 
         const [h, m] = t.split(':').map(Number); 
-        return h * 60 + m; 
+        return Math.round(h * 60 + m); 
     };
 
     function saveData() {
@@ -138,6 +142,17 @@
         localStorage.setItem('edeka_fr', document.getElementById('w-fr').value);
     }
 
+    function syncStartToBlock() {
+        const startVal = document.getElementById('start-time').value;
+        if(startVal) {
+            document.getElementById('b1-s').value = startVal;
+        }
+        calculateFeierabend();
+    }
+
+    function clearDecField() { document.getElementById('conv-dec').value = ""; }
+    function clearHmFields() { document.getElementById('conv-h').value = ""; document.getElementById('conv-m').value = ""; }
+
     function calculateFeierabend() {
         const start = document.getElementById('start-time').value;
         const soll = parseFloat(document.getElementById('day-mode').value);
@@ -146,9 +161,10 @@
         if(!start) return;
         
         let mins = tToMin(start);
-        let workMins = soll * 60;
+        // Exakte Minutenberechnung des Solls zur Vermeidung von Floating-Point-Fehlern
+        let workMins = Math.round(soll * 60);
         
-        // Pausenlogik
+        // Pausenlogik basierend auf dem Soll
         let gesetzPause = (soll > 9) ? 45 : (soll > 6 ? 30 : 0);
         let breakfastMin = hasBreakfast ? 25 : 0;
         
@@ -156,6 +172,7 @@
         
         let endH = Math.floor(total / 60) % 24;
         let endM = Math.round(total % 60);
+        if(endM === 60) { endM = 0; endH = (endH + 1) % 24; }
         
         document.getElementById('end-res').innerHTML = `Feierabend um:<br><b style="font-size:1.3em;">${String(endH).padStart(2,'0')}:${String(endM).padStart(2,'0')} Uhr</b>`;
     }
@@ -171,20 +188,21 @@
         let m2 = (s2 !== null && e2 !== null) ? (e2 - s2) : 0;
         if(m1 < 0) m1 += 1440; if(m2 < 0) m2 += 1440;
 
-        // Pause nur berechnen, wenn zwischen den Blöcken eine Lücke ist
         let pauseReal = (e1 !== null && s2 !== null) ? (s2 - e1) : 0;
         if(pauseReal < 0) pauseReal = 0; 
 
+        // Berechnung komplett in Minuten abwickeln, um maximale Genauigkeit zu sichern
         let totalNettoMin = (m1 + m2);
-        // Frühstückspause ist BEZAHLT, wird also von der ANWESENHEIT abgezogen, 
-        // um die reine Arbeitszeit zu erhalten, wenn man währenddessen gestoppt hat.
-        if(document.getElementById('breakfast-toggle-ist').checked) totalNettoMin -= 25;
+        if(document.getElementById('breakfast-toggle-ist').checked) {
+            totalNettoMin -= 25;
+        }
 
-        let totalNettoH = parseFloat((totalNettoMin / 60).toFixed(2));
-        let diff = parseFloat((totalNettoH - soll).toFixed(2));
+        // Exakte Umrechnung in Stunden (Verwendung von Multiplikation vor Division zur Absicherung)
+        let totalNettoH = Math.round(totalNettoMin / 60 * 100) / 100;
+        // Saldo-Berechnung mit Absicherung gegen JavaScript-Rundungsfehler
+        let diff = Math.round((totalNettoH - soll) * 100) / 100;
         
         let warnMsg = "";
-        // BV Prüfung
         if (totalNettoH > 9.0 && pauseReal < 45) {
             warnMsg = `<div class="warning-box">⚠️ Pause zu kurz!<br>Bei >9h Arbeit sind 45 Min. Pflicht. Dir fehlen ${45 - pauseReal} Min.</div>`;
         } else if (totalNettoH > 6.0 && pauseReal < 30) {
@@ -198,8 +216,14 @@
 
     function calculateWeek() {
         let sum = 0;
-        document.querySelectorAll('.week-day').forEach(i => sum += parseFloat(i.value || 0));
-        let diff = sum - 38.5;
+        // Präzise Aufsummierung durch vorheriges Runden der Einzelwerte
+        document.querySelectorAll('.week-day').forEach(i => {
+            let val = parseFloat(i.value || 0);
+            sum += Math.round(val * 100);
+        });
+        sum = sum / 100;
+
+        let diff = Math.round((sum - 38.5) * 100) / 100;
         let resDiv = document.getElementById('week-res');
         resDiv.className = 'result ' + (diff >= 0 ? 'positive' : 'negative');
         resDiv.innerHTML = `Woche: ${sum.toFixed(2)}h von 38.50h<br><b>${diff >= 0 ? 'Ziel erreicht! (+' + diff.toFixed(2) + ')' : 'Noch offen: ' + Math.abs(diff).toFixed(2) + 'h'}</b>`;
@@ -212,11 +236,14 @@
         let res = document.getElementById('dec-res');
         
         if(h !== "" || m !== "") {
-            let d = (parseInt(h||0) + (parseInt(m||0)/60)).toFixed(2);
+            let totalMin = (parseInt(h||0) * 60) + parseInt(m||0);
+            let d = (totalMin / 60).toFixed(2);
             res.textContent = d + " Dezimalstunden";
         } else if(dec !== "") {
             let total = Math.round(parseFloat(dec) * 60);
-            res.textContent = Math.floor(total/60) + ":" + String(total%60).padStart(2,'0') + " h:mm";
+            let resM = total % 60;
+            let resH = Math.floor(total / 60);
+            res.textContent = resH + ":" + String(resM).padStart(2,'0') + " h:mm";
         }
     }
 
@@ -227,8 +254,12 @@
         document.getElementById('w-mi').value = localStorage.getItem('edeka_mi') || '';
         document.getElementById('w-do').value = localStorage.getItem('edeka_do') || '';
         document.getElementById('w-fr').value = localStorage.getItem('edeka_fr') || '';
-        // Startwert für Block 1 Start aus Startzeit übernehmen falls vorhanden
-        if(localStorage.getItem('edeka_start')) document.getElementById('b1-s').value = localStorage.getItem('edeka_start');
+        
+        if(localStorage.getItem('edeka_start')) {
+            document.getElementById('b1-s').value = localStorage.getItem('edeka_start');
+            calculateFeierabend();
+        }
+        calculateWeek();
     };
 </script>
 </body>
