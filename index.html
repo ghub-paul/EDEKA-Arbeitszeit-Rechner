@@ -20,13 +20,23 @@
         }
         .calculator {
             width: 22%; min-width: 320px; padding: 20px; background: #ffffff; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); flex-grow: 1; 
+            display: flex; flex-direction: column; justify-content: space-between;
         }
-        h1 { text-align: center; color: #000; margin-bottom: 20px; font-size: 1.3em; border-bottom: 2px solid #FFD600; padding-bottom: 10px; }
+        .calc-content { flex-grow: 1; }
+        h1 { text-align: center; color: #000; margin-top: 0; margin-bottom: 20px; font-size: 1.3em; border-bottom: 2px solid #FFD600; padding-bottom: 10px; }
         .info-details { font-size: 0.75em; color: #666; margin-bottom: 15px; background: #fdfdfd; padding: 8px; border-radius: 5px; border: 1px solid #eee; }
         label { font-weight: 600; display: block; margin-bottom: 5px; font-size: 14px; }
         input, select, button { box-sizing: border-box; width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 5px; border: 1px solid #ccc; font-family: inherit; }
-        button { background-color: #FFD600; color: black; font-weight: bold; border: none; cursor: pointer; transition: 0.2s; font-size: 16px; }
+        button { background-color: #FFD600; color: black; font-weight: bold; border: none; cursor: pointer; transition: 0.2s; font-size: 16px; margin-bottom: 10px; }
         button:hover { background-color: #f0c300; }
+        
+        /* Flexbox für Button-Leiste zur Integration der Reset- und Undo-Knöpfe */
+        .btn-group { display: flex; gap: 5px; }
+        .btn-main { flex-grow: 5; }
+        .btn-reset { flex-grow: 1; background-color: #e06666; color: white; font-size: 14px; padding: 10px 5px; }
+        .btn-reset:hover { background-color: #cc0000; }
+        .btn-undo { flex-grow: 1; background-color: #6fa8dc; color: white; font-size: 14px; padding: 10px 5px; }
+        .btn-undo:hover { background-color: #3d85c6; }
 
         .switch-container { background: #fff9e6; padding: 12px; border-radius: 5px; margin-bottom: 15px; border: 1px solid #ffeeba; display: flex; justify-content: space-between; align-items: center; }
         .switch-label { font-size: 12px; font-weight: 600; color: #555; }
@@ -37,11 +47,11 @@
         input:checked + .slider { background-color: #008000; }
         input:checked + .slider:before { transform: translateX(22px); }
 
-        .result { text-align: center; padding: 15px; background-color: #F8F8F8; border-radius: 5px; min-height: 45px; font-size: 14px; }
+        .result { text-align: center; padding: 15px; background-color: #F8F8F8; border-radius: 5px; min-height: 45px; font-size: 14px; margin-top: auto; }
         .neutral { color: #333; border: 1px solid #ddd; }
         .negative { color: #b30000; background-color: #ffe0e0; border: 1px solid #f2dede; }
         .positive { color: #008000; background-color: #e0ffe0; border: 1px solid #dff0d8; }
-        .warning-box { color: #856404; background-color: #fff3cd; border: 1px solid #ffeeba; padding: 8px; font-size: 0.85em; margin-top: 10px; border-radius: 4px; font-weight: bold; line-height: 1.4; }
+        .warning-box { color: #856404; background-color: #fff3cd; border: 1px solid #ffeeba; padding: 8px; font-size: 0.85em; margin-top: 10px; border-radius: 4px; font-weight: bold; line-height: 1.4; text-align: left; }
 
         .week-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 5px; align-items: center; margin-bottom: 10px; }
         .week-grid label { margin: 0; }
@@ -56,69 +66,90 @@
     <img src="https://citycenter.de/wp-content/uploads/2021/06/logo-edeka-eisenhuettenstadt.png" alt="EDEKA" class="header-logo">
 
     <div class="container">
-        <!-- Feierabend-Planer -->
         <div class="calculator">
-            <h1>Feierabend-Planer</h1>
-            <div class="info-details">Berücksichtigt gesetzliche Pausen (30m/45m) + EDEKA Frühstückspause.</div>
-            <label>Startzeit:</label>
-            <input type="time" id="start-time" onchange="saveData(); syncStartToBlock();">
-            <label>Tagessoll:</label>
-            <select id="day-mode" onchange="calculateFeierabend()">
-                <option value="8.42">Mo - Do (8.42h)</option>
-                <option value="4.83">Freitag (4.83h)</option>
-            </select>
-            <div class="switch-container">
-                <div class="switch-label">Frühstückspause? (+25 Min.)</div>
-                <label class="switch"><input type="checkbox" id="breakfast-toggle" onchange="calculateFeierabend()"><span class="slider"></span></label>
+            <div class="calc-content">
+                <h1>Feierabend-Planer</h1>
+                <div class="info-details">Berücksichtigt gesetzliche Pausen (30m/45m) + EDEKA Frühstückspause.<br><b>Servicezeit Würzburg beachten!</b></div>
+                <label>Startzeit:</label>
+                <input type="time" id="start-time" onchange="saveData(); syncStartToBlock();">
+                <label>Tagessoll:</label>
+                <select id="day-mode" onchange="calculateFeierabend()">
+                    <option value="8.42">Mo - Do (8.42h) | Kern: 08:30-15:30</option>
+                    <option value="4.83">Freitag (4.83h) | Kern: 08:30-12:00</option>
+                </select>
+                <div class="switch-container">
+                    <div class="switch-label">Frühstückspause? (+25 Min.)</div>
+                    <label class="switch"><input type="checkbox" id="breakfast-toggle" onchange="calculateFeierabend()"><span class="slider"></span></label>
+                </div>
             </div>
-            <button onclick="calculateFeierabend()">Wann kann ich gehen?</button>
+            <div class="btn-group">
+                <button class="btn-reset" onclick="resetFeierabend()" title="Zurücksetzen">✖</button>
+                <button class="btn-undo" onclick="undoFeierabend()" title="Rückgängig">↩</button>
+                <button class="btn-main" onclick="calculateFeierabend()">Wann kann ich gehen?</button>
+            </div>
             <div id="end-res" class="result neutral">---</div>
         </div>
 
-        <!-- Ist-Zeit Rechner -->
         <div class="calculator">
-            <h1>Ist-Zeit Rechner</h1>
-            <div class="info-details">Trage deine Zeitblöcke ein. Das Tool checkt die Pausenvorgaben.</div>
-            <label>Block 1 (Vormittag):</label>
-            <div style="display:flex; gap:5px;"><input type="time" id="b1-s"> bis <input type="time" id="b1-e"></div>
-            <label>Block 2 (Nachmittag):</label>
-            <div style="display:flex; gap:5px;"><input type="time" id="b2-s"> bis <input type="time" id="b2-e"></div>
-            <div class="switch-container">
-                <div class="switch-label">Frühstückspause gemacht?</div>
-                <label class="switch"><input type="checkbox" id="breakfast-toggle-ist"><span class="slider"></span></label>
+            <div class="calc-content">
+                <h1>Ist-Zeit Rechner</h1>
+                <div class="info-details">Trage deine Zeitblöcke ein. Das Tool prüft die Pausenvorgaben sowie die Kernarbeitszeit.</div>
+                <label>Block 1 (Vormittag):</label>
+                <div style="display:flex; gap:5px;"><input type="time" id="b1-s"> bis <input type="time" id="b1-e"></div>
+                <label>Block 2 (Nachmittag):</label>
+                <div style="display:flex; gap:5px;"><input type="time" id="b2-s"> bis <input type="time" id="b2-e"></div>
+                <div class="switch-container">
+                    <div class="switch-label">Frühstückspause gemacht?</div>
+                    <label class="switch"><input type="checkbox" id="breakfast-toggle-ist"><span class="slider"></span></label>
+                </div>
+                <label>Soll-Stunden heute:</label>
+                <input type="number" id="soll-input" value="8.42" step="0.01">
             </div>
-            <label>Soll-Stunden heute:</label>
-            <input type="number" id="soll-input" value="8.42" step="0.01">
-            <button onclick="calculateIntervalWork()">Saldo berechnen</button>
+            <div class="btn-group">
+                <button class="btn-reset" onclick="resetIstZeit()" title="Zurücksetzen">✖</button>
+                <button class="btn-undo" onclick="undoIstZeit()" title="Rückgängig">↩</button>
+                <button class="btn-main" onclick="calculateIntervalWork()">Saldo berechnen</button>
+            </div>
             <div id="int-res" class="result neutral">---</div>
         </div>
 
-        <!-- Wochen-Monitor -->
         <div class="calculator">
-            <h1>Wochen-Monitor</h1>
-            <div class="info-details">Eingabe in Dezimal (z.B. 8.42). Speichert automatisch.</div>
-            <div class="week-grid">
-                <label>Mo:</label><input type="number" step="0.01" class="week-day" id="w-mo" oninput="saveData()">
-                <label>Di:</label><input type="number" step="0.01" class="week-day" id="w-di" oninput="saveData()">
-                <label>Mi:</label><input type="number" step="0.01" class="week-day" id="w-mi" oninput="saveData()">
-                <label>Do:</label><input type="number" step="0.01" class="week-day" id="w-do" oninput="saveData()">
-                <label>Fr:</label><input type="number" step="0.01" class="week-day" id="w-fr" oninput="saveData()">
+            <div class="calc-content">
+                <h1>Wochen-Monitor</h1>
+                <div class="info-details">Eingabe in Dezimal (z.B. 8.42). Setzt sich wöchentlich am Sonntag automatisch zurück.</div>
+                <div class="week-grid">
+                    <label>Mo:</label><input type="number" step="0.01" class="week-day" id="w-mo" oninput="saveData()">
+                    <label>Di:</label><input type="number" step="0.01" class="week-day" id="w-di" oninput="saveData()">
+                    <label>Mi:</label><input type="number" step="0.01" class="week-day" id="w-mi" oninput="saveData()">
+                    <label>Do:</label><input type="number" step="0.01" class="week-day" id="w-do" oninput="saveData()">
+                    <label>Fr:</label><input type="number" step="0.01" class="week-day" id="w-fr" oninput="saveData()">
+                </div>
             </div>
-            <button onclick="calculateWeek()">Wochen-Saldo</button>
+            <div class="btn-group">
+                <button class="btn-reset" onclick="resetWoche()" title="Woche leeren">✖</button>
+                <button class="btn-undo" onclick="undoWoche()" title="Rückgängig">↩</button>
+                <button class="btn-main" onclick="calculateWeek()">Wochen-Saldo</button>
+            </div>
             <div id="week-res" class="result neutral">Ziel: 38.50h</div>
         </div>
 
-        <!-- Umwandler -->
         <div class="calculator">
-            <h1>Umwandler</h1>
-            <label>h:mm ➔ Dezimal</label>
-            <div style="display:flex; gap:5px;">
-                <input type="number" id="conv-h" placeholder="Std" oninput="clearDecField()">
-                <input type="number" id="conv-m" placeholder="Min" oninput="clearDecField()">
+            <div class="calc-content">
+                <h1>Umwandler</h1>
+                <div class="info-details">Konvertiert klassische Zeiteingaben unkompliziert in Dezimalwerte für den Wochen-Monitor.</div>
+                <label>h:mm ➔ Dezimal</label>
+                <div style="display:flex; gap:5px;">
+                    <input type="number" id="conv-h" placeholder="Std" oninput="clearDecField()">
+                    <input type="number" id="conv-m" placeholder="Min" oninput="clearDecField()">
+                </div>
+                <label>Dezimal ➔ h:mm</label>
+                <input type="number" id="conv-dec" step="0.01" placeholder="z.B. 8.42" oninput="clearHmFields()">
             </div>
-            <label>Dezimal ➔ h:mm</label>
-            <input type="number" id="conv-dec" step="0.01" placeholder="z.B. 8.42" oninput="clearHmFields()">
-            <button onclick="handleConversion()">Umrechnen</button>
+            <div class="btn-group">
+                <button class="btn-reset" onclick="resetUmwandler()" title="Zurücksetzen">✖</button>
+                <button class="btn-undo" onclick="undoUmwandler()" title="Rückgängig">↩</button>
+                <button class="btn-main" onclick="handleConversion()">Umrechnen</button>
+            </div>
             <div id="dec-res" class="result neutral">---</div>
         </div>
     </div>
@@ -126,12 +157,43 @@
     <div class="footer">EDEKA IT Standort Würzburg | BV 2026</div>
 
 <script>
+    // Globale Variablen als temporärer Zwischenspeicher für die Rückgängig-Funktion
+    let backupFeierabend = null;
+    let backupIstZeit = null;
+    let backupWoche = null;
+    let backupUmwandler = null;
+
     // Hilfsfunktion: Zeit-String (HH:MM) präzise in Minuten umwandeln
     const tToMin = (t) => { 
         if(!t || t === "") return null; 
         const [h, m] = t.split(':').map(Number); 
         return Math.round(h * 60 + m); 
     };
+
+    // Hilfsfunktion zur Ermittlung der aktuellen Kalenderwoche (für den Sonntags-Reset)
+    function getWeekNumber(d) {
+        d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+        d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay()||7));
+        var startOfYear = new Date(Date.UTC(d.getUTCFullYear(),0,1));
+        var weekNo = Math.ceil(( ( (d - startOfYear) / 86400000) + 1)/7);
+        return d.getUTCFullYear() + "-" + weekNo;
+    }
+
+    // Prüft, ob eine neue Woche angefangen hat, falls ja -> Reset durchführen
+    function checkWeeklyReset() {
+        const currentWeek = getWeekNumber(new Date());
+        const savedWeek = localStorage.getItem('edeka_saved_week');
+        
+        if (savedWeek && savedWeek !== currentWeek) {
+            // Neue Woche detektiert -> Speicher für Wochen-Monitor leeren
+            localStorage.removeItem('edeka_mo');
+            localStorage.removeItem('edeka_di');
+            localStorage.removeItem('edeka_mi');
+            localStorage.removeItem('edeka_do');
+            localStorage.removeItem('edeka_fr');
+        }
+        localStorage.setItem('edeka_saved_week', currentWeek);
+    }
 
     function saveData() {
         localStorage.setItem('edeka_start', document.getElementById('start-time').value);
@@ -140,6 +202,7 @@
         localStorage.setItem('edeka_mi', document.getElementById('w-mi').value);
         localStorage.setItem('edeka_do', document.getElementById('w-do').value);
         localStorage.setItem('edeka_fr', document.getElementById('w-fr').value);
+        updatePlaceholders();
     }
 
     function syncStartToBlock() {
@@ -153,6 +216,112 @@
     function clearDecField() { document.getElementById('conv-dec').value = ""; }
     function clearHmFields() { document.getElementById('conv-h').value = ""; document.getElementById('conv-m').value = ""; }
 
+    // RESET & UNDO FUNKTIONEN
+    function resetFeierabend() {
+        backupFeierabend = {
+            start: document.getElementById('start-time').value,
+            mode: document.getElementById('day-mode').value,
+            breakfast: document.getElementById('breakfast-toggle').checked,
+            html: document.getElementById('end-res').innerHTML,
+            className: document.getElementById('end-res').className
+        };
+        document.getElementById('start-time').value = "";
+        document.getElementById('day-mode').selectedIndex = 0;
+        document.getElementById('breakfast-toggle').checked = false;
+        document.getElementById('end-res').className = 'result neutral';
+        document.getElementById('end-res').innerHTML = '---';
+        localStorage.removeItem('edeka_start');
+    }
+    function undoFeierabend() {
+        if (!backupFeierabend) return;
+        document.getElementById('start-time').value = backupFeierabend.start;
+        document.getElementById('day-mode').value = backupFeierabend.mode;
+        document.getElementById('breakfast-toggle').checked = backupFeierabend.breakfast;
+        document.getElementById('end-res').innerHTML = backupFeierabend.html;
+        document.getElementById('end-res').className = backupFeierabend.className;
+        saveData();
+    }
+
+    function resetIstZeit() {
+        backupIstZeit = {
+            b1s: document.getElementById('b1-s').value,
+            b1e: document.getElementById('b1-e').value,
+            b2s: document.getElementById('b2-s').value,
+            b2e: document.getElementById('b2-e').value,
+            breakfast: document.getElementById('breakfast-toggle-ist').checked,
+            soll: document.getElementById('soll-input').value,
+            html: document.getElementById('int-res').innerHTML,
+            className: document.getElementById('int-res').className
+        };
+        document.getElementById('b1-s').value = "";
+        document.getElementById('b1-e').value = "";
+        document.getElementById('b2-s').value = "";
+        document.getElementById('b2-e').value = "";
+        document.getElementById('breakfast-toggle-ist').checked = false;
+        document.getElementById('soll-input').value = "8.42";
+        document.getElementById('int-res').className = 'result neutral';
+        document.getElementById('int-res').innerHTML = '---';
+    }
+    function undoIstZeit() {
+        if (!backupIstZeit) return;
+        document.getElementById('b1-s').value = backupIstZeit.b1s;
+        document.getElementById('b1-e').value = backupIstZeit.b1e;
+        document.getElementById('b2-s').value = backupIstZeit.b2s;
+        document.getElementById('b2-e').value = backupIstZeit.b2e;
+        document.getElementById('breakfast-toggle-ist').checked = backupIstZeit.breakfast;
+        document.getElementById('soll-input').value = backupIstZeit.soll;
+        document.getElementById('int-res').innerHTML = backupIstZeit.html;
+        document.getElementById('int-res').className = backupIstZeit.className;
+    }
+
+    function resetWoche() {
+        backupWoche = {
+            mo: document.getElementById('w-mo').value,
+            di: document.getElementById('w-di').value,
+            mi: document.getElementById('w-mi').value,
+            do: document.getElementById('w-do').value,
+            fr: document.getElementById('w-fr').value,
+            html: document.getElementById('week-res').innerHTML,
+            className: document.getElementById('week-res').className
+        };
+        document.querySelectorAll('.week-day').forEach(i => i.value = "");
+        saveData();
+        calculateWeek();
+    }
+    function undoWoche() {
+        if (!backupWoche) return;
+        document.getElementById('w-mo').value = backupWoche.mo;
+        document.getElementById('w-di').value = backupWoche.di;
+        document.getElementById('w-mi').value = backupWoche.mi;
+        document.getElementById('w-do').value = backupWoche.do;
+        document.getElementById('w-fr').value = backupWoche.fr;
+        document.getElementById('week-res').innerHTML = backupWoche.html;
+        document.getElementById('week-res').className = backupWoche.className;
+        saveData();
+        calculateWeek();
+    }
+
+    function resetUmwandler() {
+        backupUmwandler = {
+            h: document.getElementById('conv-h').value,
+            m: document.getElementById('conv-m').value,
+            dec: document.getElementById('conv-dec').value,
+            html: document.getElementById('dec-res').innerHTML
+        };
+        document.getElementById('conv-h').value = "";
+        document.getElementById('conv-m').value = "";
+        document.getElementById('conv-dec').value = "";
+        document.getElementById('dec-res').className = 'result neutral';
+        document.getElementById('dec-res').innerHTML = '---';
+    }
+    function undoUmwandler() {
+        if (!backupUmwandler) return;
+        document.getElementById('conv-h').value = backupUmwandler.h;
+        document.getElementById('conv-m').value = backupUmwandler.m;
+        document.getElementById('conv-dec').value = backupUmwandler.dec;
+        document.getElementById('dec-res').innerHTML = backupUmwandler.html;
+    }
+
     function calculateFeierabend() {
         const start = document.getElementById('start-time').value;
         const soll = parseFloat(document.getElementById('day-mode').value);
@@ -161,10 +330,8 @@
         if(!start) return;
         
         let mins = tToMin(start);
-        // Exakte Minutenberechnung des Solls zur Vermeidung von Floating-Point-Fehlern
         let workMins = Math.round(soll * 60);
         
-        // Pausenlogik basierend auf dem Soll
         let gesetzPause = (soll > 9) ? 45 : (soll > 6 ? 30 : 0);
         let breakfastMin = hasBreakfast ? 25 : 0;
         
@@ -178,10 +345,15 @@
     }
 
     function calculateIntervalWork() {
-        const s1 = tToMin(document.getElementById('b1-s').value);
-        const e1 = tToMin(document.getElementById('b1-e').value);
-        const s2 = tToMin(document.getElementById('b2-s').value);
-        const e2 = tToMin(document.getElementById('b2-e').value);
+        const s1Str = document.getElementById('b1-s').value;
+        const e1Str = document.getElementById('b1-e').value;
+        const s2Str = document.getElementById('b2-s').value;
+        const e2Str = document.getElementById('b2-e').value;
+        
+        const s1 = tToMin(s1Str);
+        const e1 = tToMin(e1Str);
+        const s2 = tToMin(s2Str);
+        const e2 = tToMin(e2Str);
         const soll = parseFloat(document.getElementById('soll-input').value);
 
         let m1 = (s1 !== null && e1 !== null) ? (e1 - s1) : 0;
@@ -191,22 +363,33 @@
         let pauseReal = (e1 !== null && s2 !== null) ? (s2 - e1) : 0;
         if(pauseReal < 0) pauseReal = 0; 
 
-        // Berechnung komplett in Minuten abwickeln, um maximale Genauigkeit zu sichern
         let totalNettoMin = (m1 + m2);
         if(document.getElementById('breakfast-toggle-ist').checked) {
             totalNettoMin -= 25;
         }
 
-        // Exakte Umrechnung in Stunden (Verwendung von Multiplikation vor Division zur Absicherung)
         let totalNettoH = Math.round(totalNettoMin / 60 * 100) / 100;
-        // Saldo-Berechnung mit Absicherung gegen JavaScript-Rundungsfehler
         let diff = Math.round((totalNettoH - soll) * 100) / 100;
         
         let warnMsg = "";
         if (totalNettoH > 9.0 && pauseReal < 45) {
-            warnMsg = `<div class="warning-box">⚠️ Pause zu kurz!<br>Bei >9h Arbeit sind 45 Min. Pflicht. Dir fehlen ${45 - pauseReal} Min.</div>`;
+            warnMsg += `⚠️ Pause zu kurz! Bei >9h Arbeit sind 45 Min. Pflicht. Dir fehlen ${45 - pauseReal} Min.<br>`;
         } else if (totalNettoH > 6.0 && pauseReal < 30) {
-            warnMsg = `<div class="warning-box">⚠️ Pause zu kurz!<br>Bei >6h Arbeit sind 30 Min. Pflicht. Dir fehlen ${30 - pauseReal} Min.</div>`;
+            warnMsg += `⚠️ Pause zu kurz! Bei >6h Arbeit sind 30 Min. Pflicht. Dir fehlen ${30 - pauseReal} Min.<br>`;
+        }
+
+        let coreStart = 510;
+        let coreEnd = (soll < 5.0) ? 720 : 930; 
+        let coreText = (soll < 5.0) ? "08:30-12:00" : "08:30-15:30";
+
+        if(s1 !== null && e1 !== null && s2 !== null && e2 !== null) {
+            if(e1 < coreEnd && s2 > coreStart && (s2 - e1) > 0) {
+                warnMsg += `ℹ️ Servicezeit-Hinweis: Deine Pause lag im Kernzeitfenster (${coreText}). Stelle sicher, dass die Mindestbesetzung im Team abgesprochen war.<br>`;
+            }
+        }
+
+        if(warnMsg !== "") {
+            warnMsg = `<div class="warning-box">${warnMsg}</div>`;
         }
 
         let resDiv = document.getElementById('int-res');
@@ -216,7 +399,6 @@
 
     function calculateWeek() {
         let sum = 0;
-        // Präzise Aufsummierung durch vorheriges Runden der Einzelwerte
         document.querySelectorAll('.week-day').forEach(i => {
             let val = parseFloat(i.value || 0);
             sum += Math.round(val * 100);
@@ -227,6 +409,39 @@
         let resDiv = document.getElementById('week-res');
         resDiv.className = 'result ' + (diff >= 0 ? 'positive' : 'negative');
         resDiv.innerHTML = `Woche: ${sum.toFixed(2)}h von 38.50h<br><b>${diff >= 0 ? 'Ziel erreicht! (+' + diff.toFixed(2) + ')' : 'Noch offen: ' + Math.abs(diff).toFixed(2) + 'h'}</b>`;
+        
+        updatePlaceholders();
+    }
+
+    function updatePlaceholders() {
+        let sum = 0;
+        let emptyDaysCount = 0;
+        const fields = document.querySelectorAll('.week-day');
+
+        fields.forEach(i => {
+            if (i.value === "") {
+                emptyDaysCount++;
+            } else {
+                sum += Math.round(parseFloat(i.value) * 100);
+            }
+        });
+        sum = sum / 100;
+
+        let totalTarget = 38.5;
+        let remainingHours = totalTarget - sum;
+
+        fields.forEach(i => {
+            if (i.value === "") {
+                if (remainingHours > 0 && emptyDaysCount > 0) {
+                    let suggestion = Math.round((remainingHours / emptyDaysCount) * 100) / 100;
+                    i.placeholder = "z.B. " + suggestion.toFixed(2);
+                } else {
+                    i.placeholder = "";
+                }
+            } else {
+                i.placeholder = "";
+            }
+        });
     }
 
     function handleConversion() {
@@ -248,6 +463,8 @@
     }
 
     window.onload = () => {
+        checkWeeklyReset();
+
         document.getElementById('start-time').value = localStorage.getItem('edeka_start') || '';
         document.getElementById('w-mo').value = localStorage.getItem('edeka_mo') || '';
         document.getElementById('w-di').value = localStorage.getItem('edeka_di') || '';
@@ -260,6 +477,7 @@
             calculateFeierabend();
         }
         calculateWeek();
+        updatePlaceholders();
     };
 </script>
 </body>
