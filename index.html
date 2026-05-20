@@ -157,20 +157,17 @@
     <div class="footer">EDEKA IT Standort Würzburg | BV 2026</div>
 
 <script>
-    // Globale Variablen als temporärer Zwischenspeicher für die Rückgängig-Funktion
     let backupFeierabend = null;
     let backupIstZeit = null;
     let backupWoche = null;
     let backupUmwandler = null;
 
-    // Hilfsfunktion: Zeit-String (HH:MM) präzise in Minuten umwandeln
     const tToMin = (t) => { 
         if(!t || t === "") return null; 
         const [h, m] = t.split(':').map(Number); 
         return Math.round(h * 60 + m); 
     };
 
-    // Hilfsfunktion zur Ermittlung der aktuellen Kalenderwoche (für den Sonntags-Reset)
     function getWeekNumber(d) {
         d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
         d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay()||7));
@@ -179,13 +176,11 @@
         return d.getUTCFullYear() + "-" + weekNo;
     }
 
-    // Prüft, ob eine neue Woche angefangen hat, falls ja -> Reset durchführen
     function checkWeeklyReset() {
         const currentWeek = getWeekNumber(new Date());
         const savedWeek = localStorage.getItem('edeka_saved_week');
         
         if (savedWeek && savedWeek !== currentWeek) {
-            // Neue Woche detektiert -> Speicher für Wochen-Monitor leeren
             localStorage.removeItem('edeka_mo');
             localStorage.removeItem('edeka_di');
             localStorage.removeItem('edeka_mi');
@@ -216,7 +211,6 @@
     function clearDecField() { document.getElementById('conv-dec').value = ""; }
     function clearHmFields() { document.getElementById('conv-h').value = ""; document.getElementById('conv-m').value = ""; }
 
-    // RESET & UNDO FUNKTIONEN
     function resetFeierabend() {
         backupFeierabend = {
             start: document.getElementById('start-time').value,
@@ -378,13 +372,15 @@
             warnMsg += `⚠️ Pause zu kurz! Bei >6h Arbeit sind 30 Min. Pflicht. Dir fehlen ${30 - pauseReal} Min.<br>`;
         }
 
-        let coreStart = 510;
-        let coreEnd = (soll < 5.0) ? 720 : 930; 
+        let coreStart = 510; // 08:30 Uhr in Minuten
+        let coreEnd = (soll < 5.0) ? 720 : 930; // 12:00 Uhr (Fr) oder 15:30 Uhr (Mo-Do)
         let coreText = (soll < 5.0) ? "08:30-12:00" : "08:30-15:30";
 
         if(s1 !== null && e1 !== null && s2 !== null && e2 !== null) {
-            if(e1 < coreEnd && s2 > coreStart && (s2 - e1) > 0) {
-                warnMsg += `ℹ️ Servicezeit-Hinweis: Deine Pause lag im Kernzeitfenster (${coreText}). Stelle sicher, dass die Mindestbesetzung im Team abgesprochen war.<br>`;
+            // Geändert: Ein Hinweis erfolgt NUR dann, wenn die Pause LÄNGER als 60 Minuten dauert und im Kernzeitfenster liegt.
+            // Normale Mittagspausen (z.B. 30-45 Min) bleiben ab jetzt komplett unbemerkt.
+            if(e1 < coreEnd && s2 > coreStart && pauseReal > 60) {
+                warnMsg += `ℹ️ Servicezeit-Hinweis: Deine Arbeitsunterbrechung lag im Kernzeitfenster (${coreText}) und dauerte länger als 1 Std. Stelle sicher, dass die Mindestbesetzung im Team abgesprochen war.<br>`;
             }
         }
 
