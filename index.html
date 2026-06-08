@@ -17,7 +17,7 @@
             color: #111; 
             margin: 0; 
             padding: 0 0 40px 0; 
-            display: flex; 
+            display: flex;
             flex-direction: column; 
             align-items: center; 
             min-height: 100vh; 
@@ -25,7 +25,7 @@
         }
 
         .custom-header {
-            width: 100%; 
+            width: 100%;
             background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(15px);
             -webkit-backdrop-filter: blur(15px);
@@ -90,11 +90,13 @@
             line-height: 1.4;
         }
 
-        .header-meta .highlight { font-weight: 600; color: #000; }
-        .header-meta .author { font-size: 0.85em; color: #666; font-style: italic; margin-top: 2px; }
+        .header-meta .highlight { font-weight: 600;
+            color: #000; }
+        .header-meta .author { font-size: 0.85em; color: #666; font-style: italic;
+            margin-top: 2px; }
 
         .container {
-            width: 100%; 
+            width: 100%;
             max-width: 1400px; 
             display: flex; 
             flex-wrap: wrap; 
@@ -105,17 +107,17 @@
         }
         
         .calculator {
-            width: 22%; 
+            width: 22%;
             min-width: 340px; 
             padding: 25px; 
             background: rgba(255, 255, 255, 0.75); 
             backdrop-filter: blur(12px); 
             -webkit-backdrop-filter: blur(12px);
-            border-radius: 16px; 
+            border-radius: 16px;
             border: 1px solid rgba(255, 255, 255, 0.5); 
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2); 
             flex-grow: 1; 
-            display: flex; 
+            display: flex;
             flex-direction: column; 
             justify-content: space-between;
             transition: transform 0.2s, box-shadow 0.2s;
@@ -126,57 +128,95 @@
             box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.3);
         }
 
-        .calc-content { flex-grow: 1; }
-        .calculator h1 { text-align: center; color: #000; margin-top: 0; margin-bottom: 20px; font-size: 1.3em; border-bottom: 2px solid #FFD600; padding-bottom: 10px; font-weight: 600; }
+        .calc-content { flex-grow: 1;
+        }
+        .calculator h1 { text-align: center; color: #000; margin-top: 0; margin-bottom: 20px;
+            font-size: 1.3em; border-bottom: 2px solid #FFD600; padding-bottom: 10px; font-weight: 600;
+        }
         
         .info-details { 
-            font-size: 0.75em; 
+            font-size: 0.75em;
             color: #444; 
             margin-bottom: 15px; 
             background: rgba(0, 0, 0, 0.05); 
             padding: 10px; 
             border-radius: 8px; 
             border-left: 3px solid #FFD600; 
-            font-weight: 500; 
+            font-weight: 500;
             line-height: 1.4;
         }
 
-        label { font-weight: 600; display: block; margin-bottom: 5px; font-size: 14px; color: #000; }
+        label { font-weight: 600; display: block; margin-bottom: 5px; font-size: 14px;
+            color: #000; }
         
-        input, select { box-sizing: border-box; width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 8px; border: 1px solid rgba(0,0,0,0.15); font-family: inherit; background: rgba(255,255,255,0.9); font-weight: 500; color: #000; }
-        input:focus, select:focus { outline: none; border-color: #FFD600; background: #fff; }
+        input, select { box-sizing: border-box;
+            width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 8px; border: 1px solid rgba(0,0,0,0.15); font-family: inherit; background: rgba(255,255,255,0.9); font-weight: 500; color: #000;
+        }
+        input:focus, select:focus { outline: none; border-color: #FFD600; background: #fff;
+        }
         
-        .block-row { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
-        .block-row input { margin-bottom: 0; padding: 8px; }
-        .block-row span { font-size: 12px; font-weight: bold; color: #333; }
-        .btn-delete-block { background: rgba(224, 102, 102, 0.2); color: #cc0000; width: 35px; padding: 8px; margin-bottom: 0; box-shadow: none; border: 1px solid rgba(224, 102, 102, 0.4); cursor: pointer; }
-        .btn-delete-block:hover { background: #cc0000; color: white; }
+        .block-row { display: flex;
+            align-items: center; gap: 8px; margin-bottom: 10px; }
+        .block-row input { margin-bottom: 0;
+            padding: 8px; }
+        .block-row span { font-size: 12px; font-weight: bold; color: #333;
+        }
+        .btn-delete-block { background: rgba(224, 102, 102, 0.2); color: #cc0000; width: 35px;
+            padding: 8px; margin-bottom: 0; box-shadow: none; border: 1px solid rgba(224, 102, 102, 0.4); cursor: pointer;
+        }
+        .btn-delete-block:hover { background: #cc0000; color: white;
+        }
         
-        .btn-add-block { background-color: #f1f3f5; color: #333; border: 1px dashed #ccc; font-size: 13px; padding: 8px; margin-top: 5px; margin-bottom: 15px; box-shadow: none; width: 100%; cursor: pointer; }
-        .btn-add-block:hover { background-color: #e2e6ea; transform: none; }
+        .btn-add-block { background-color: #f1f3f5;
+            color: #333; border: 1px dashed #ccc; font-size: 13px; padding: 8px; margin-top: 5px; margin-bottom: 15px; box-shadow: none; width: 100%; cursor: pointer;
+        }
+        .btn-add-block:hover { background-color: #e2e6ea; transform: none;
+        }
 
-        button { box-sizing: border-box; width: 100%; padding: 10px; border-radius: 8px; font-family: inherit; background-color: #FFD600; color: black; font-weight: bold; border: none; cursor: pointer; transition: 0.2s; font-size: 16px; margin-bottom: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
-        button:hover { background-color: #f0c300; transform: scale(1.01); }
+        button { box-sizing: border-box; width: 100%; padding: 10px; border-radius: 8px; font-family: inherit;
+            background-color: #FFD600; color: black; font-weight: bold; border: none; cursor: pointer; transition: 0.2s; font-size: 16px; margin-bottom: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
+        button:hover { background-color: #f0c300; transform: scale(1.01);
+        }
         
-        .btn-group { display: flex; gap: 6px; }
-        .btn-main { flex-grow: 5; }
-        .btn-reset { flex-grow: 1; background-color: rgba(224, 102, 102, 0.9); color: white; font-size: 14px; padding: 10px 5px; margin-bottom: 10px; }
-        .btn-reset:hover { background-color: #cc0000; }
-        .btn-undo { flex-grow: 1; background-color: rgba(111, 168, 220, 0.9); color: white; font-size: 14px; padding: 10px 5px; margin-bottom: 10px; }
-        .btn-undo:hover { background-color: #3d85c6; }
+        .btn-group { display: flex;
+            gap: 6px; }
+        .btn-main { flex-grow: 5;
+        }
+        .btn-reset { flex-grow: 1; background-color: rgba(224, 102, 102, 0.9); color: white;
+            font-size: 14px; padding: 10px 5px; margin-bottom: 10px; }
+        .btn-reset:hover { background-color: #cc0000;
+        }
+        .btn-undo { flex-grow: 1; background-color: rgba(111, 168, 220, 0.9); color: white;
+            font-size: 14px; padding: 10px 5px; margin-bottom: 10px; }
+        .btn-undo:hover { background-color: #3d85c6;
+        }
 
-        .result { text-align: center; padding: 15px; border-radius: 8px; min-height: 45px; font-size: 14px; margin-top: auto; box-shadow: inset 0 2px 5px rgba(0,0,0,0.05); font-weight: 500; line-height: 1.4; }
-        .neutral { color: #000; background-color: rgba(255, 255, 255, 0.6); border: 1px solid rgba(0,0,0,0.1); }
-        .negative { color: #800000; background-color: rgba(255, 180, 180, 0.8); border: 1px solid rgba(255,0,0,0.2); }
-        .positive { color: #004d00; background-color: rgba(180, 255, 180, 0.8); border: 1px solid rgba(0,255,0,0.2); }
+        .result { text-align: center; padding: 15px; border-radius: 8px; min-height: 45px; font-size: 14px;
+            margin-top: auto; box-shadow: inset 0 2px 5px rgba(0,0,0,0.05); font-weight: 500; line-height: 1.4;
+        }
+        .neutral { color: #000; background-color: rgba(255, 255, 255, 0.6);
+            border: 1px solid rgba(0,0,0,0.1); }
+        .negative { color: #800000;
+            background-color: rgba(255, 180, 180, 0.8); border: 1px solid rgba(255,0,0,0.2); }
+        .positive { color: #004d00;
+            background-color: rgba(180, 255, 180, 0.8); border: 1px solid rgba(0,255,0,0.2); }
         
-        .warning-box { color: #533f03; background-color: rgba(255, 243, 205, 0.9); border: 1px solid rgba(255, 214, 0, 0.5); padding: 8px; font-size: 0.85em; margin-top: 10px; border-radius: 6px; font-weight: bold; line-height: 1.4; text-align: left; }
-        .transfer-box { margin-top: 10px; padding: 8px; background: rgba(217, 235, 255, 0.9); border: 1px solid rgba(0, 123, 255, 0.3); border-radius: 6px; font-size: 12px; color: #004085; font-weight: bold; }
+        .warning-box { color: #533f03;
+            background-color: rgba(255, 243, 205, 0.9); border: 1px solid rgba(255, 214, 0, 0.5); padding: 8px; font-size: 0.85em; margin-top: 10px; border-radius: 6px;
+            font-weight: bold; line-height: 1.4; text-align: left; }
+        .transfer-box { margin-top: 10px; padding: 8px;
+            background: rgba(217, 235, 255, 0.9); border: 1px solid rgba(0, 123, 255, 0.3); border-radius: 6px; font-size: 12px; color: #004085; font-weight: bold;
+        }
 
-        .week-grid { display: grid; grid-template-columns: 1fr 3fr; gap: 15px; align-items: center; margin-bottom: 25px; }
-        .week-grid label { margin: 0; color: #000; font-size: 16px; font-weight: 600; }
-        .week-grid input { margin: 0; padding: 10px; }
-        .input-warning { border: 2px solid #cc0000 !important; background-color: rgba(255, 200, 200, 0.9) !important; }
+        .week-grid { display: grid; grid-template-columns: 1fr 3fr; gap: 15px; align-items: center;
+            margin-bottom: 25px; }
+        .week-grid label { margin: 0; color: #000; font-size: 16px;
+            font-weight: 600; }
+        .week-grid input { margin: 0; padding: 10px;
+        }
+        .input-warning { border: 2px solid #cc0000 !important;
+            background-color: rgba(255, 200, 200, 0.9) !important; }
     </style>
 </head>
 <body>
@@ -194,8 +234,10 @@
                     <option value="minor">Unter 18 Jahre</option>
                 </select>
             </div>
+     
             <div class="header-meta">
-                <div>Standort <span class="highlight">Würzburg</span> | BV <span class="highlight">2026</span></div>
+                <div>Standort <span class="highlight">Würzburg</span> |
+                    BV <span class="highlight">2026</span></div>
                 <div class="author">Made by Paul Ziese</div>
             </div>
         </div>
@@ -205,10 +247,12 @@
         <div class="calculator">
             <div class="calc-content">
                 <h1>Arbeitszeit-Planer</h1>
+           
                 <div class="info-details">Berechnet das voraussichtliche Ende basierend auf Gesetz, Alter und geplanten Pausen.</div>
                 
                 <label>Startzeit:</label>
-                <input type="text" id="start-time" tabindex="0" placeholder="z.B. 07:00 oder 7" onblur="formatTimeInput(this); saveData(); syncStartToBlock();" oninput="limitLength(this, 5)">
+                <input type="text" id="start-time" tabindex="0" placeholder="z.B. 07:00 oder 7" onblur="formatTimeInput(this); saveStartData(this.value); calculateFeierabend();"
+                    oninput="limitLength(this, 5)">
                 
                 <label>Tagessoll (Stunden):</label>
                 <select id="day-mode" tabindex="0" onchange="calculateFeierabend()">
@@ -230,7 +274,8 @@
         <div class="calculator">
             <div class="calc-content">
                 <h1>Zeit-Bilanz</h1>
-                <div class="info-details">Trage deine Arbeitsintervalle ein. Pausen und Gesamtzeit werden automatisch ermittelt.</div>
+                <div class="info-details">Trage deine Arbeitsintervalle ein.
+                    Pausen und Gesamtzeit werden automatisch ermittelt.</div>
                 
                 <label>Arbeitsblöcke (Intervalle):</label>
                 <div id="dynamic-blocks-container">
@@ -244,12 +289,14 @@
                 <button class="btn-add-block" tabindex="0" onclick="addBlock()">Block hinzufügen</button>
                 
                 <label>Soll-Stunden heute:</label>
-                <input type="number" id="soll-input" tabindex="0" value="7.70" step="0.01" max="24" oninput="limitLength(this, 5); calculateIntervalWork()">
+                <input type="number" id="soll-input" tabindex="0" 
+                    value="7.70" step="0.01" max="24" oninput="limitLength(this, 5); calculateIntervalWork()">
             </div>
             <div class="btn-group">
                 <button class="btn-reset" tabindex="0" onclick="resetIstZeit()" title="Zurücksetzen">✖</button>
                 <button class="btn-undo" tabindex="0" onclick="undoIstZeit()" title="Rückgängig">↩</button>
-                <button class="btn-main" tabindex="0" onclick="saveIstBackup(); calculateIntervalWork();">Saldo berechnen</button>
+                <button class="btn-main" tabindex="0" onclick="saveIstBackup();
+                    calculateIntervalWork();">Saldo berechnen</button>
             </div>
             <div id="int-res" class="result neutral">---</div>
         </div>
@@ -257,14 +304,20 @@
         <div class="calculator">
             <div class="calc-content">
                 <h1>Wochen-Monitor</h1>
-                <div class="info-details">Trage deine Stunden für die Woche ein (z.B. 7.7). Die Vorschau zeigt an, wie viel offen ist.</div>
+                <div class="info-details">Trage deine Stunden für die Woche ein (z.B. 7.7). 
+                    Die Vorschau zeigt an, wie viel offen ist.</div>
                 
                 <div class="week-grid">
-                    <label>Mo:</label><input type="number" tabindex="0" step="0.01" max="24" class="week-day" id="w-mo" oninput="limitLength(this, 5); saveData(); calculateWeek();">
-                    <label>Di:</label><input type="number" tabindex="0" step="0.01" max="24" class="week-day" id="w-di" oninput="limitLength(this, 5); saveData(); calculateWeek();">
-                    <label>Mi:</label><input type="number" tabindex="0" step="0.01" max="24" class="week-day" id="w-mi" oninput="limitLength(this, 5); saveData(); calculateWeek();">
-                    <label>Do:</label><input type="number" tabindex="0" step="0.01" max="24" class="week-day" id="w-do" oninput="limitLength(this, 5); saveData(); calculateWeek();">
-                    <label>Fr:</label><input type="number" tabindex="0" step="0.01" max="24" class="week-day" id="w-fr" oninput="limitLength(this, 5); saveData(); calculateWeek();">
+                    <label>Mo:</label><input type="number" tabindex="0" step="0.01" max="24" class="week-day" id="w-mo" oninput="limitLength(this, 5);
+                        saveData(); calculateWeek();">
+                    <label>Di:</label><input type="number" tabindex="0" step="0.01" max="24" class="week-day" id="w-di" oninput="limitLength(this, 5);
+                        saveData(); calculateWeek();">
+                    <label>Mi:</label><input type="number" tabindex="0" step="0.01" max="24" class="week-day" id="w-mi" oninput="limitLength(this, 5);
+                        saveData(); calculateWeek();">
+                    <label>Do:</label><input type="number" tabindex="0" step="0.01" max="24" class="week-day" id="w-do" oninput="limitLength(this, 5);
+                        saveData(); calculateWeek();">
+                    <label>Fr:</label><input type="number" tabindex="0" step="0.01" max="24" class="week-day" id="w-fr" oninput="limitLength(this, 5);
+                        saveData(); calculateWeek();">
                 </div>
             </div>
             <div class="btn-group">
@@ -278,14 +331,18 @@
         <div class="calculator">
             <div class="calc-content">
                 <h1>Zeiteinheiten-Konverter</h1>
-                <div class="info-details">Konvertiert klassische Zeiteingaben unkompliziert in Dezimalwerte für den Wochen-Monitor.</div>
+                <div class="info-details">Konvertiert klassische Zeiteingaben unkompliziert 
+                    in Dezimalwerte für den Wochen-Monitor.</div>
                 <label>h:mm ➔ Dezimal</label>
                 <div style="display:flex; gap:5px;">
-                    <input type="number" id="conv-h" tabindex="0" placeholder="Std" max="999" oninput="limitLength(this, 3); clearDecField(); handleConversion();">
-                    <input type="number" id="conv-m" tabindex="0" placeholder="Min" max="59" oninput="limitLength(this, 2); clearDecField(); handleConversion();">
+                    <input type="number" id="conv-h" tabindex="0" placeholder="Std" max="999" oninput="limitLength(this, 3);
+                        clearDecField(); handleConversion();">
+                    <input type="number" id="conv-m" tabindex="0" placeholder="Min" max="59" oninput="limitLength(this, 2);
+                        clearDecField(); handleConversion();">
                 </div>
                 <label>Dezimal ➔ h:mm</label>
-                <input type="number" id="conv-dec" tabindex="0" step="0.01" max="999" placeholder="z.B. 7.70" oninput="limitLength(this, 5); clearHmFields(); handleConversion();">
+                <input type="number" id="conv-dec" tabindex="0" step="0.01" max="999" placeholder="z.B.
+                    7.70" oninput="limitLength(this, 5); clearHmFields(); handleConversion();">
             </div>
             <div class="btn-group">
                 <button class="btn-reset" tabindex="0" onclick="resetUmwandler()" title="Zurücksetzen">✖</button>
@@ -297,24 +354,17 @@
     </div>
 
 <script>
-    // --- NEUE NAVIGATIONS-LOGIK ---
+    // --- NAVIGATIONS-LOGIK ---
     document.addEventListener('keydown', function(e) {
-        // Prüfen, ob eine der relevanten Tasten gedrückt wurde
         if (['Enter', 'ArrowDown', 'ArrowRight', 'ArrowUp', 'ArrowLeft'].includes(e.key)) {
-            
-            // Alle fokussierbaren Elemente (Inputs, Selects, Buttons)
             const allFocusable = Array.from(document.querySelectorAll('input, select, button'));
-            
-            // Filtern: nur Elemente mit tabindex >= 0, sichtbar, und NICHT die "Löschen"-Buttons
             const focusable = allFocusable.filter(el =>
                 el.tabIndex !== -1 && 
                 el.offsetParent !== null && 
                 !el.classList.contains('btn-delete-block')
             );
-
             const currentIndex = focusable.indexOf(document.activeElement);
 
-            // Enter-Taste: Wenn im Input/Select -> zum nächsten springen
             if (e.key === 'Enter') {
                 const active = document.activeElement;
                 if (active.tagName === 'INPUT' || active.tagName === 'SELECT') {
@@ -323,9 +373,7 @@
                         focusable[currentIndex + 1].focus();
                     }
                 }
-                // Wenn es ein Button ist, wird der Klick standardmäßig vom Browser ausgeführt
             } 
-            // Pfeiltasten: Navigieren
             else if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
                 e.preventDefault();
                 let next = (currentIndex + 1) % focusable.length;
@@ -338,13 +386,11 @@
             }
         }
     });
-    // --- ENDE NAVIGATIONS-LOGIK ---
 
     let backupFeierabend = null;
     let backupIstZeit = null;
     let backupWoche = null;
     let backupUmwandler = null;
-    let latestCalculatedIstHours = 0;
 
     function limitLength(input, maxLength) {
         if (input.value.length > maxLength) {
@@ -381,12 +427,11 @@
         } else {
             val = '';
         }
-
         input.value = val;
     }
 
     const tToMin = (t) => { 
-        if(!t || t === "" || !t.includes(':')) return null; 
+        if(!t || t === "" || !t.includes(':')) return null;
         const parts = t.split(':');
         const h = Number(parts[0]);
         const m = Number(parts[1]);
@@ -405,15 +450,16 @@
         const currentWeek = getWeekNumber(new Date());
         const savedWeek = localStorage.getItem('edeka_saved_week');
         if (savedWeek && savedWeek !== currentWeek) {
-            localStorage.removeItem('edeka_mo'); localStorage.removeItem('edeka_di');
-            localStorage.removeItem('edeka_mi'); localStorage.removeItem('edeka_do');
+            localStorage.removeItem('edeka_mo');
+            localStorage.removeItem('edeka_di');
+            localStorage.removeItem('edeka_mi'); 
+            localStorage.removeItem('edeka_do');
             localStorage.removeItem('edeka_fr');
         }
         localStorage.setItem('edeka_saved_week', currentWeek);
     }
 
     function saveData() {
-        localStorage.setItem('edeka_start', document.getElementById('start-time').value);
         localStorage.setItem('edeka_age', document.getElementById('age-mode').value);
         localStorage.setItem('edeka_mo', document.getElementById('w-mo').value);
         localStorage.setItem('edeka_di', document.getElementById('w-di').value);
@@ -422,17 +468,34 @@
         localStorage.setItem('edeka_fr', document.getElementById('w-fr').value);
     }
 
-    function triggerGlobalRecalculation() {
-        calculateFeierabend();
-        calculateIntervalWork();
+    function loadWeekData() {
+        const days = ['mo', 'di', 'mi', 'do', 'fr'];
+        days.forEach(day => {
+            const val = localStorage.getItem('edeka_' + day);
+            if (val) {
+                document.getElementById('w-' + day).value = val;
+            }
+        });
+        calculateWeek();
     }
 
-    function syncStartToBlock() {
-        const startVal = document.getElementById('start-time').value;
-        const firstStartInput = document.querySelector('.b-start');
-        if(startVal && firstStartInput) {
-            firstStartInput.value = startVal;
+    function saveStartData(val) {
+        const data = { value: val, timestamp: Date.now() };
+        localStorage.setItem('edeka_start_time', JSON.stringify(data));
+    }
+
+    function loadStartData() {
+        const raw = localStorage.getItem('edeka_start_time');
+        if (!raw) return;
+        const data = JSON.parse(raw);
+        if (Date.now() - data.timestamp < 12 * 60 * 60 * 1000) {
+            document.getElementById('start-time').value = data.value;
+        } else {
+            localStorage.removeItem('edeka_start_time');
         }
+    }
+
+    function triggerGlobalRecalculation() {
         calculateFeierabend();
         calculateIntervalWork();
     }
@@ -479,7 +542,7 @@
         document.getElementById('planned-break').value = "30";
         document.getElementById('end-res').className = 'result neutral';
         document.getElementById('end-res').innerHTML = '---';
-        localStorage.removeItem('edeka_start');
+        localStorage.removeItem('edeka_start_time');
     }
     
     function undoFeierabend() {
@@ -489,7 +552,7 @@
         document.getElementById('planned-break').value = backupFeierabend.break;
         document.getElementById('end-res').innerHTML = backupFeierabend.html;
         document.getElementById('end-res').className = backupFeierabend.className;
-        saveData();
+        saveStartData(backupFeierabend.start);
     }
 
     function saveIstBackup() {
@@ -535,7 +598,6 @@
             `;
             container.appendChild(div);
         });
-        
         document.getElementById('soll-input').value = backupIstZeit.soll;
         document.getElementById('int-res').innerHTML = backupIstZeit.html;
         document.getElementById('int-res').className = backupIstZeit.className;
@@ -551,13 +613,11 @@
             html: document.getElementById('week-res').innerHTML,
             className: document.getElementById('week-res').className
         };
-        
         ['mo', 'di', 'mi', 'do', 'fr'].forEach(day => {
             const field = document.getElementById('w-' + day);
             field.value = "";
             field.classList.remove('input-warning');
         });
-        
         saveData(); 
         calculateWeek(); 
     }
@@ -602,7 +662,6 @@
         const soll = parseFloat(document.getElementById('day-mode').value);
         const ageMode = document.getElementById('age-mode').value;
         let userBreak = parseInt(document.getElementById('planned-break').value || 0);
-        
         if (start === "") {
             document.getElementById('end-res').className = 'result neutral';
             document.getElementById('end-res').innerHTML = '---';
@@ -647,11 +706,9 @@
         const starts = document.querySelectorAll('.b-start');
         const ends = document.querySelectorAll('.b-end');
         const soll = parseFloat(document.getElementById('soll-input').value);
-        const ageMode = document.getElementById('age-mode').value;
 
         let activeIntervals = [];
         let inputError = false;
-        
         for(let i=0; i<starts.length; i++) {
             if(starts[i].value === "" && ends[i].value === "") continue;
             let sVal = tToMin(starts[i].value);
@@ -661,7 +718,7 @@
                 if(starts[i].value !== "" || ends[i].value !== "") inputError = true;
                 continue;
             }
-            if(eVal < sVal) eVal += 1440; 
+            if(eVal < sVal) eVal += 1440;
             activeIntervals.push({start: sVal, end: eVal});
         }
 
@@ -679,20 +736,15 @@
 
         activeIntervals.sort((a,b) => a.start - b.start);
         let totalNettoMin = 0;
-        let calculatedPausenMin = 0;
         activeIntervals.forEach(block => totalNettoMin += (block.end - block.start));
-        for(let i=0; i < activeIntervals.length - 1; i++) {
-            let pause = activeIntervals[i+1].start - activeIntervals[i].end;
-            if(pause > 0) calculatedPausenMin += pause;
-        }
 
         let totalNettoH = Math.round(totalNettoMin / 60 * 100) / 100;
         let diff = Math.round((totalNettoH - soll) * 100) / 100;
         
-        let warnMsg = "";
         let display = `Netto: ${totalNettoH}h | Differenz: ${diff > 0 ? '+' : ''}${diff}h`;
-        document.getElementById('int-res').innerHTML = `${display}${warnMsg}`;
-        document.getElementById('int-res').className = diff >= 0 ? 'result positive' : 'result negative';
+        document.getElementById('int-res').innerHTML = display;
+        document.getElementById('int-res').className = diff >= 0 ?
+        'result positive' : 'result negative';
     }
 
     function calculateWeek() {
@@ -710,7 +762,6 @@
         const m = document.getElementById('conv-m').value;
         const dec = document.getElementById('conv-dec').value;
         const res = document.getElementById('dec-res');
-        
         if (h !== "" || m !== "") {
             let total = parseInt(h || 0) + (parseInt(m || 0) / 60);
             res.innerHTML = `Dezimalwert: ${total.toFixed(2)}`;
@@ -724,7 +775,10 @@
         }
     }
     
+    // Initialisierung
     checkWeeklyReset();
+    loadWeekData();
+    loadStartData();
 </script>
 </body>
 </html>
