@@ -149,10 +149,10 @@
         .block-row { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
         .block-row input { margin-bottom: 0; padding: 8px; }
         .block-row span { font-size: 12px; font-weight: bold; color: #333; }
-        .btn-delete-block { background: rgba(224, 102, 102, 0.2); color: #cc0000; width: 35px; padding: 8px; margin-bottom: 0; box-shadow: none; border: 1px solid rgba(224, 102, 102, 0.4); }
+        .btn-delete-block { background: rgba(224, 102, 102, 0.2); color: #cc0000; width: 35px; padding: 8px; margin-bottom: 0; box-shadow: none; border: 1px solid rgba(224, 102, 102, 0.4); cursor: pointer; }
         .btn-delete-block:hover { background: #cc0000; color: white; }
         
-        .btn-add-block { background-color: #f1f3f5; color: #333; border: 1px dashed #ccc; font-size: 13px; padding: 8px; margin-top: 5px; margin-bottom: 15px; box-shadow: none; width: 100%; }
+        .btn-add-block { background-color: #f1f3f5; color: #333; border: 1px dashed #ccc; font-size: 13px; padding: 8px; margin-top: 5px; margin-bottom: 15px; box-shadow: none; width: 100%; cursor: pointer; }
         .btn-add-block:hover { background-color: #e2e6ea; transform: none; }
 
         button { box-sizing: border-box; width: 100%; padding: 10px; border-radius: 8px; font-family: inherit; background-color: #FFD600; color: black; font-weight: bold; border: none; cursor: pointer; transition: 0.2s; font-size: 16px; margin-bottom: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
@@ -189,7 +189,7 @@
         <div class="header-controls">
             <div class="header-select-box">
                 <label>Altersgruppe:</label>
-                <select id="age-mode" onchange="saveData(); triggerGlobalRecalculation();">
+                <select id="age-mode" tabindex="0" onchange="saveData(); triggerGlobalRecalculation();">
                     <option value="adult">Erwachsen (ab 18 Jahre)</option>
                     <option value="minor">Unter 18 Jahre</option>
                 </select>
@@ -208,21 +208,21 @@
                 <div class="info-details">Berechnet das voraussichtliche Ende basierend auf Gesetz, Alter und geplanten Pausen.</div>
                 
                 <label>Startzeit:</label>
-                <input type="text" id="start-time" placeholder="z.B. 07:00 oder 7" onblur="formatTimeInput(this); saveData(); syncStartToBlock();" oninput="limitLength(this, 5)">
+                <input type="text" id="start-time" tabindex="0" placeholder="z.B. 07:00 oder 7" onblur="formatTimeInput(this); saveData(); syncStartToBlock();" oninput="limitLength(this, 5)">
                 
                 <label>Tagessoll (Stunden):</label>
-                <select id="day-mode" onchange="calculateFeierabend()">
+                <select id="day-mode" tabindex="0" onchange="calculateFeierabend()">
                     <option value="7.70">Standard-Vollzeit (7.70h)</option>
                     <option value="4.00">Mindestarbeitszeit BV (4.00h)</option>
                 </select>
                 
                 <label>Geplante Gesamtpause (Minuten):</label>
-                <input type="number" id="planned-break" value="30" min="0" max="360" step="5" oninput="limitLength(this, 3); calculateFeierabend()">
+                <input type="number" id="planned-break" tabindex="0" value="30" min="0" max="360" step="5" oninput="limitLength(this, 3); calculateFeierabend()">
             </div>
             <div class="btn-group">
-                <button class="btn-reset" onclick="resetFeierabend()" title="Zurücksetzen">✖</button>
-                <button class="btn-undo" onclick="undoFeierabend()" title="Rückgängig">↩</button>
-                <button class="btn-main" onclick="calculateFeierabend()">Frühestes Arbeitsende</button>
+                <button class="btn-reset" tabindex="0" onclick="resetFeierabend()" title="Zurücksetzen">✖</button>
+                <button class="btn-undo" tabindex="0" onclick="undoFeierabend()" title="Rückgängig">↩</button>
+                <button class="btn-main" tabindex="0" onclick="calculateFeierabend()">Frühestes Arbeitsende</button>
             </div>
             <div id="end-res" class="result neutral">---</div>
         </div>
@@ -235,21 +235,21 @@
                 <label>Arbeitsblöcke (Intervalle):</label>
                 <div id="dynamic-blocks-container">
                     <div class="block-row">
-                        <input type="text" class="b-start" placeholder="07:00" onblur="formatTimeInput(this); calculateIntervalWork()" oninput="limitLength(this, 5)">
+                        <input type="text" class="b-start" tabindex="0" placeholder="07:00" onblur="formatTimeInput(this); calculateIntervalWork()" oninput="limitLength(this, 5)">
                         <span>bis</span>
-                        <input type="text" class="b-end" placeholder="12:00" onblur="formatTimeInput(this); calculateIntervalWork()" oninput="limitLength(this, 5)">
-                        <button class="btn-delete-block" onclick="removeBlock(this)">✖</button>
+                        <input type="text" class="b-end" tabindex="0" placeholder="12:00" onblur="formatTimeInput(this); calculateIntervalWork()" oninput="limitLength(this, 5)">
+                        <button class="btn-delete-block" tabindex="-1" onclick="removeBlock(this)">✖</button>
                     </div>
                 </div>
-                <button class="btn-add-block" onclick="addBlock()">Block hinzufügen</button>
+                <button class="btn-add-block" tabindex="0" onclick="addBlock()">Block hinzufügen</button>
                 
                 <label>Soll-Stunden heute:</label>
-                <input type="number" id="soll-input" value="7.70" step="0.01" max="24" oninput="limitLength(this, 5); calculateIntervalWork()">
+                <input type="number" id="soll-input" tabindex="0" value="7.70" step="0.01" max="24" oninput="limitLength(this, 5); calculateIntervalWork()">
             </div>
             <div class="btn-group">
-                <button class="btn-reset" onclick="resetIstZeit()" title="Zurücksetzen">✖</button>
-                <button class="btn-undo" onclick="undoIstZeit()" title="Rückgängig">↩</button>
-                <button class="btn-main" onclick="saveIstBackup(); calculateIntervalWork();">Saldo berechnen</button>
+                <button class="btn-reset" tabindex="0" onclick="resetIstZeit()" title="Zurücksetzen">✖</button>
+                <button class="btn-undo" tabindex="0" onclick="undoIstZeit()" title="Rückgängig">↩</button>
+                <button class="btn-main" tabindex="0" onclick="saveIstBackup(); calculateIntervalWork();">Saldo berechnen</button>
             </div>
             <div id="int-res" class="result neutral">---</div>
         </div>
@@ -260,17 +260,17 @@
                 <div class="info-details">Trage deine Stunden für die Woche ein (z.B. 7.7). Die Vorschau zeigt an, wie viel offen ist.</div>
                 
                 <div class="week-grid">
-                    <label>Mo:</label><input type="number" step="0.01" max="24" class="week-day" id="w-mo" oninput="limitLength(this, 5); saveData(); calculateWeek();">
-                    <label>Di:</label><input type="number" step="0.01" max="24" class="week-day" id="w-di" oninput="limitLength(this, 5); saveData(); calculateWeek();">
-                    <label>Mi:</label><input type="number" step="0.01" max="24" class="week-day" id="w-mi" oninput="limitLength(this, 5); saveData(); calculateWeek();">
-                    <label>Do:</label><input type="number" step="0.01" max="24" class="week-day" id="w-do" oninput="limitLength(this, 5); saveData(); calculateWeek();">
-                    <label>Fr:</label><input type="number" step="0.01" max="24" class="week-day" id="w-fr" oninput="limitLength(this, 5); saveData(); calculateWeek();">
+                    <label>Mo:</label><input type="number" tabindex="0" step="0.01" max="24" class="week-day" id="w-mo" oninput="limitLength(this, 5); saveData(); calculateWeek();">
+                    <label>Di:</label><input type="number" tabindex="0" step="0.01" max="24" class="week-day" id="w-di" oninput="limitLength(this, 5); saveData(); calculateWeek();">
+                    <label>Mi:</label><input type="number" tabindex="0" step="0.01" max="24" class="week-day" id="w-mi" oninput="limitLength(this, 5); saveData(); calculateWeek();">
+                    <label>Do:</label><input type="number" tabindex="0" step="0.01" max="24" class="week-day" id="w-do" oninput="limitLength(this, 5); saveData(); calculateWeek();">
+                    <label>Fr:</label><input type="number" tabindex="0" step="0.01" max="24" class="week-day" id="w-fr" oninput="limitLength(this, 5); saveData(); calculateWeek();">
                 </div>
             </div>
             <div class="btn-group">
-                <button class="btn-reset" onclick="resetWoche()" title="Woche leeren">✖</button>
-                <button class="btn-undo" onclick="undoWoche()" title="Rückgängig">↩</button>
-                <button class="btn-main" onclick="calculateWeek()">Berechnen</button>
+                <button class="btn-reset" tabindex="0" onclick="resetWoche()" title="Woche leeren">✖</button>
+                <button class="btn-undo" tabindex="0" onclick="undoWoche()" title="Rückgängig">↩</button>
+                <button class="btn-main" tabindex="0" onclick="calculateWeek()">Berechnen</button>
             </div>
             <div id="week-res" class="result neutral">Eingetragen: 0.00h | Offen: 38.50h</div>
         </div>
@@ -281,22 +281,65 @@
                 <div class="info-details">Konvertiert klassische Zeiteingaben unkompliziert in Dezimalwerte für den Wochen-Monitor.</div>
                 <label>h:mm ➔ Dezimal</label>
                 <div style="display:flex; gap:5px;">
-                    <input type="number" id="conv-h" placeholder="Std" max="999" oninput="limitLength(this, 3); clearDecField(); handleConversion();">
-                    <input type="number" id="conv-m" placeholder="Min" max="59" oninput="limitLength(this, 2); clearDecField(); handleConversion();">
+                    <input type="number" id="conv-h" tabindex="0" placeholder="Std" max="999" oninput="limitLength(this, 3); clearDecField(); handleConversion();">
+                    <input type="number" id="conv-m" tabindex="0" placeholder="Min" max="59" oninput="limitLength(this, 2); clearDecField(); handleConversion();">
                 </div>
                 <label>Dezimal ➔ h:mm</label>
-                <input type="number" id="conv-dec" step="0.01" max="999" placeholder="z.B. 7.70" oninput="limitLength(this, 5); clearHmFields(); handleConversion();">
+                <input type="number" id="conv-dec" tabindex="0" step="0.01" max="999" placeholder="z.B. 7.70" oninput="limitLength(this, 5); clearHmFields(); handleConversion();">
             </div>
             <div class="btn-group">
-                <button class="btn-reset" onclick="resetUmwandler()" title="Zurücksetzen">✖</button>
-                <button class="btn-undo" onclick="undoUmwandler()" title="Rückgängig">↩</button>
-                <button class="btn-main" onclick="handleConversion()">Umrechnen</button>
+                <button class="btn-reset" tabindex="0" onclick="resetUmwandler()" title="Zurücksetzen">✖</button>
+                <button class="btn-undo" tabindex="0" onclick="undoUmwandler()" title="Rückgängig">↩</button>
+                <button class="btn-main" tabindex="0" onclick="handleConversion()">Umrechnen</button>
             </div>
             <div id="dec-res" class="result neutral">---</div>
         </div>
     </div>
 
 <script>
+    // --- NEUE NAVIGATIONS-LOGIK ---
+    document.addEventListener('keydown', function(e) {
+        // Prüfen, ob eine der relevanten Tasten gedrückt wurde
+        if (['Enter', 'ArrowDown', 'ArrowRight', 'ArrowUp', 'ArrowLeft'].includes(e.key)) {
+            
+            // Alle fokussierbaren Elemente (Inputs, Selects, Buttons)
+            const allFocusable = Array.from(document.querySelectorAll('input, select, button'));
+            
+            // Filtern: nur Elemente mit tabindex >= 0, sichtbar, und NICHT die "Löschen"-Buttons
+            const focusable = allFocusable.filter(el =>
+                el.tabIndex !== -1 && 
+                el.offsetParent !== null && 
+                !el.classList.contains('btn-delete-block')
+            );
+
+            const currentIndex = focusable.indexOf(document.activeElement);
+
+            // Enter-Taste: Wenn im Input/Select -> zum nächsten springen
+            if (e.key === 'Enter') {
+                const active = document.activeElement;
+                if (active.tagName === 'INPUT' || active.tagName === 'SELECT') {
+                    if (currentIndex > -1 && currentIndex < focusable.length - 1) {
+                        e.preventDefault();
+                        focusable[currentIndex + 1].focus();
+                    }
+                }
+                // Wenn es ein Button ist, wird der Klick standardmäßig vom Browser ausgeführt
+            } 
+            // Pfeiltasten: Navigieren
+            else if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+                e.preventDefault();
+                let next = (currentIndex + 1) % focusable.length;
+                focusable[next].focus();
+            } 
+            else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+                e.preventDefault();
+                let prev = (currentIndex - 1 + focusable.length) % focusable.length;
+                focusable[prev].focus();
+            }
+        }
+    });
+    // --- ENDE NAVIGATIONS-LOGIK ---
+
     let backupFeierabend = null;
     let backupIstZeit = null;
     let backupWoche = null;
@@ -403,10 +446,10 @@
         const div = document.createElement('div');
         div.className = 'block-row';
         div.innerHTML = `
-            <input type="text" class="b-start" placeholder="07:00" onblur="formatTimeInput(this); calculateIntervalWork()" oninput="limitLength(this, 5)">
+            <input type="text" class="b-start" tabindex="0" placeholder="07:00" onblur="formatTimeInput(this); calculateIntervalWork()" oninput="limitLength(this, 5)">
             <span>bis</span>
-            <input type="text" class="b-end" placeholder="12:00" onblur="formatTimeInput(this); calculateIntervalWork()" oninput="limitLength(this, 5)">
-            <button class="btn-delete-block" onclick="removeBlock(this)">✖</button>
+            <input type="text" class="b-end" tabindex="0" placeholder="12:00" onblur="formatTimeInput(this); calculateIntervalWork()" oninput="limitLength(this, 5)">
+            <button class="btn-delete-block" tabindex="-1" onclick="removeBlock(this)">✖</button>
         `;
         container.appendChild(div);
     }
@@ -465,10 +508,10 @@
         const container = document.getElementById('dynamic-blocks-container');
         container.innerHTML = `
             <div class="block-row">
-                <input type="text" class="b-start" placeholder="07:00" onblur="formatTimeInput(this); calculateIntervalWork()" oninput="limitLength(this, 5)">
+                <input type="text" class="b-start" tabindex="0" placeholder="07:00" onblur="formatTimeInput(this); calculateIntervalWork()" oninput="limitLength(this, 5)">
                 <span>bis</span>
-                <input type="text" class="b-end" placeholder="12:00" onblur="formatTimeInput(this); calculateIntervalWork()" oninput="limitLength(this, 5)">
-                <button class="btn-delete-block" onclick="removeBlock(this)">✖</button>
+                <input type="text" class="b-end" tabindex="0" placeholder="12:00" onblur="formatTimeInput(this); calculateIntervalWork()" oninput="limitLength(this, 5)">
+                <button class="btn-delete-block" tabindex="-1" onclick="removeBlock(this)">✖</button>
             </div>
         `;
         document.getElementById('soll-input').value = "7.70";
@@ -485,10 +528,10 @@
             const div = document.createElement('div');
             div.className = 'block-row';
             div.innerHTML = `
-                <input type="text" class="b-start" value="${block.start}" onblur="formatTimeInput(this); calculateIntervalWork()" oninput="limitLength(this, 5)">
+                <input type="text" class="b-start" tabindex="0" value="${block.start}" onblur="formatTimeInput(this); calculateIntervalWork()" oninput="limitLength(this, 5)">
                 <span>bis</span>
-                <input type="text" class="b-end" value="${block.end}" onblur="formatTimeInput(this); calculateIntervalWork()" oninput="limitLength(this, 5)">
-                <button class="btn-delete-block" onclick="removeBlock(this)">✖</button>
+                <input type="text" class="b-end" tabindex="0" value="${block.end}" onblur="formatTimeInput(this); calculateIntervalWork()" oninput="limitLength(this, 5)">
+                <button class="btn-delete-block" tabindex="-1" onclick="removeBlock(this)">✖</button>
             `;
             container.appendChild(div);
         });
