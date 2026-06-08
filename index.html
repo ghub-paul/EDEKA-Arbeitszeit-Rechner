@@ -295,7 +295,7 @@
                 
                 <label>Soll-Stunden heute:</label>
                 <input type="number" id="soll-input" tabindex="0" 
-                    value="7.70" step="0.01" max="24" oninput="limitLength(this, 5);
+                    value="7.70" step="0.01" max="10" oninput="limitLength(this, 5);
                 calculateIntervalWork()">
             </div>
             <div class="btn-group">
@@ -761,7 +761,14 @@ Pause!</div>`;
         let totalNettoMin = 0;
         activeIntervals.forEach(block => totalNettoMin += (block.end - block.start));
         let totalNettoH = Math.round(totalNettoMin / 60 * 100) / 100;
-        let diff = Math.round((totalNettoH - soll) * 100) / 100;
+        
+	if (totalNettoH > 10) {
+            document.getElementById('int-res').innerHTML = `Netto: ${totalNettoH}h (Achtung: Gesetzliches Limit von 10h überschritten!)`;
+            document.getElementById('int-res').className = 'result negative';
+            return;
+        }
+
+	let diff = Math.round((totalNettoH - soll) * 100) / 100;
         let display = `Netto: ${totalNettoH}h | Differenz: ${diff > 0 ? '+' : ''}${diff}h`;
         document.getElementById('int-res').innerHTML = display;
         document.getElementById('int-res').className = diff >= 0 ?
