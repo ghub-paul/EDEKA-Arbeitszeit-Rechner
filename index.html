@@ -183,12 +183,12 @@
 
     <header class="custom-header">
         <div class="header-titles">
-            <h1>Arbeitszeitrechner</h1>
-            <p>Dein Assistent für Feierabend, Ist-Zeiten und Wochenplanung</p>
+            <h1>Arbeitszeit-Optimierung</h1>
+            <p>Dein Assistent für Zeit-Bilanz, Planung und Arbeitszeiten</p>
         </div>
         <div class="header-controls">
             <div class="header-select-box">
-                <label>Altersgruppe (Rechenlogik):</label>
+                <label>Altersgruppe:</label>
                 <select id="age-mode" onchange="saveData(); triggerGlobalRecalculation();">
                     <option value="adult">Erwachsen (ab 18 Jahre)</option>
                     <option value="minor">Unter 18 Jahre</option>
@@ -204,7 +204,7 @@
     <div class="container">
         <div class="calculator">
             <div class="calc-content">
-                <h1>Feierabend-Planer</h1>
+                <h1>Arbeitszeit-Planer</h1>
                 <div class="info-details">Berechnet das voraussichtliche Ende basierend auf Gesetz, Alter und geplanten Pausen.</div>
                 
                 <label>Startzeit:</label>
@@ -222,14 +222,14 @@
             <div class="btn-group">
                 <button class="btn-reset" onclick="resetFeierabend()" title="Zurücksetzen">✖</button>
                 <button class="btn-undo" onclick="undoFeierabend()" title="Rückgängig">↩</button>
-                <button class="btn-main" onclick="calculateFeierabend()">Wann kann ich gehen?</button>
+                <button class="btn-main" onclick="calculateFeierabend()">Frühestes Arbeitsende</button>
             </div>
             <div id="end-res" class="result neutral">---</div>
         </div>
 
         <div class="calculator">
             <div class="calc-content">
-                <h1>Ist-Zeit Rechner</h1>
+                <h1>Zeit-Bilanz</h1>
                 <div class="info-details">Trage deine Arbeitsintervalle ein. Pausen und Gesamtzeit werden automatisch ermittelt.</div>
                 
                 <label>Arbeitsblöcke (Intervalle):</label>
@@ -277,7 +277,7 @@
 
         <div class="calculator">
             <div class="calc-content">
-                <h1>Umwandler</h1>
+                <h1>Zeiteinheiten-Konverter</h1>
                 <div class="info-details">Konvertiert klassische Zeiteingaben unkompliziert in Dezimalwerte für den Wochen-Monitor.</div>
                 <label>h:mm ➔ Dezimal</label>
                 <div style="display:flex; gap:5px;">
@@ -377,7 +377,6 @@
         localStorage.setItem('edeka_mi', document.getElementById('w-mi').value);
         localStorage.setItem('edeka_do', document.getElementById('w-do').value);
         localStorage.setItem('edeka_fr', document.getElementById('w-fr').value);
-        updatePlaceholders();
     }
 
     function triggerGlobalRecalculation() {
@@ -385,7 +384,6 @@
         calculateIntervalWork();
     }
 
-    // Synchronisiert Startzeit NUR, wenn im ersten Block noch nichts steht oder es überschrieben werden soll
     function syncStartToBlock() {
         const startVal = document.getElementById('start-time').value;
         const firstStartInput = document.querySelector('.b-start');
@@ -451,7 +449,6 @@
         saveData();
     }
 
-    // Erstellt ein sicheres Abbild des Ist-Zeit Rechners
     function saveIstBackup() {
         const starts = Array.from(document.querySelectorAll('.b-start')).map(i => i.value);
         const ends = Array.from(document.querySelectorAll('.b-end')).map(i => i.value);
@@ -563,7 +560,6 @@
         const ageMode = document.getElementById('age-mode').value;
         let userBreak = parseInt(document.getElementById('planned-break').value || 0);
         
-        // Wenn das Startzeitfeld komplett leer ist, zeige einfach den neutralen Zustand an
         if (start === "") {
             document.getElementById('end-res').className = 'result neutral';
             document.getElementById('end-res').innerHTML = '---';
@@ -578,24 +574,15 @@
         }
         
         let workMins = Math.round(soll * 60);
-        
-        // Gesetzliche Mindestpausenzeiten nach ArbZG und JArbSchG ermitteln
         let gesetzPause = 0;
         if (ageMode === 'minor') {
-            if (soll > 6.0) {
-                gesetzPause = 60;
-            } else if (soll > 4.5) {
-                gesetzPause = 30;
-            }
+            if (soll > 6.0) gesetzPause = 60;
+            else if (soll > 4.5) gesetzPause = 30;
         } else {
-            if (soll > 9.0) {
-                gesetzPause = 45;
-            } else if (soll > 6.0) {
-                gesetzPause = 30;
-            }
+            if (soll > 9.0) gesetzPause = 45;
+            else if (soll > 6.0) gesetzPause = 30;
         }
         
-        // Erzeuge eine Warnung, falls die eingetragene Pause geringer als die gesetzliche Vorgabe ist
         let warnMsg = "";
         if (userBreak < gesetzPause) {
             if (ageMode === 'minor') {
@@ -605,13 +592,12 @@
             }
         }
         
-        // Es wird genau mit dem berechnet, was der Nutzer eingetragen hat (flexibel!)
         let total = mins + workMins + userBreak;
         let endH = Math.floor(total / 60) % 24;
         let endM = Math.round(total % 60);
         
         document.getElementById('end-res').className = 'result neutral';
-        document.getElementById('end-res').innerHTML = `Feierabend um:<br><b style="font-size:1.3em;">${String(endH).padStart(2,'0')}:${String(endM).padStart(2,'0')} Uhr</b>${warnMsg}`;
+        document.getElementById('end-res').innerHTML = `Voraussichtliches Ende:<br><b style="font-size:1.3em;">${String(endH).padStart(2,'0')}:${String(endM).padStart(2,'0')} Uhr</b>${warnMsg}`;
     }
 
     function calculateIntervalWork() {
@@ -622,11 +608,9 @@
 
         let activeIntervals = [];
         let inputError = false;
-        let elementsCount = 0;
         
         for(let i=0; i<starts.length; i++) {
             if(starts[i].value === "" && ends[i].value === "") continue;
-            elementsCount++;
             let sVal = tToMin(starts[i].value);
             let eVal = tToMin(ends[i].value);
             
@@ -651,149 +635,53 @@
         }
 
         activeIntervals.sort((a,b) => a.start - b.start);
-
         let totalNettoMin = 0;
         let calculatedPausenMin = 0;
-
-        activeIntervals.forEach(block => {
-            totalNettoMin += (block.end - block.start);
-        });
-
+        activeIntervals.forEach(block => totalNettoMin += (block.end - block.start));
         for(let i=0; i < activeIntervals.length - 1; i++) {
             let pause = activeIntervals[i+1].start - activeIntervals[i].end;
             if(pause > 0) calculatedPausenMin += pause;
         }
 
         let totalNettoH = Math.round(totalNettoMin / 60 * 100) / 100;
-        latestCalculatedIstHours = totalNettoH;
         let diff = Math.round((totalNettoH - soll) * 100) / 100;
         
         let warnMsg = "";
-        if (ageMode === 'minor') {
-            if (totalNettoH > 6.0 && calculatedPausenMin < 60) warnMsg += `Pause zu kurz! Jugendliche benötigen ab 6h Arbeit mindestens 60 Min. Pause. Erfasst: ${calculatedPausenMin} Min.<br>`;
-            else if (totalNettoH > 4.5 && calculatedPausenMin < 30) warnMsg += `Pause zu kurz! Jugendliche benötigen ab 4.5h Arbeit mindestens 30 Min. Pause. Erfasst: ${calculatedPausenMin} Min.<br>`;
-        } else {
-            if (totalNettoH > 9.0 && calculatedPausenMin < 45) warnMsg += `Pause zu kurz! Bei >9h Arbeit sind 45 Min. Pflicht. Erfasst: ${calculatedPausenMin} Min.<br>`;
-            else if (totalNettoH > 6.0 && calculatedPausenMin < 30) warnMsg += `Pause zu kurz! Bei >6h Arbeit sind 30 Min. Pflicht. Erfasst: ${calculatedPausenMin} Min.<br>`;
-        }
-
-        if (totalNettoH > 0 && totalNettoH < 4.0) {
-            warnMsg += `Tägliche Mindestarbeitszeit unterschritten (Unter 4h)! Abwesenheitsantrag nötig.<br>`;
-        }
-
-        let currentDayNum = new Date().getDay(); 
-        let todayName = ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"][currentDayNum];
-
-        if(warnMsg !== "") warnMsg = `<div class="warning-box">${warnMsg}</div>`;
-
-        let transferHtml = "";
-        if(totalNettoH > 0 && (currentDayNum >= 1 && currentDayNum <= 5)) {
-            transferHtml = `
-                <div class="transfer-box">
-                    <span>Wert für <b>${todayName}</b> in die Woche übertragen?</span>
-                    <button style="font-size:11px; padding:4px 8px; margin:5px 0 0 0; width:auto; background:#6fa8dc; color:white; border-radius:4px;" onclick="transferToWeek('${todayName.toLowerCase()}')">Ja, eintragen</button>
-                </div>
-            `;
-        }
-
-        let resDiv = document.getElementById('int-res');
-        resDiv.className = 'result ' + (diff >= 0 ? 'positive' : 'negative');
-        resDiv.innerHTML = `Ist-Zeit: ${totalNettoH.toFixed(2)}h (Pause: ${calculatedPausenMin} Min.)<br><b>Saldo: ${diff > 0 ? '+' : ''}${diff.toFixed(2)}h</b>${warnMsg}${transferHtml}`;
-    }
-
-    function transferToWeek(dayId) {
-        let inputField = document.getElementById('w-' + dayId);
-        if(inputField) {
-            inputField.value = latestCalculatedIstHours.toFixed(2);
-            saveData(); calculateWeek();
-        }
+        let display = `Netto: ${totalNettoH}h | Differenz: ${diff > 0 ? '+' : ''}${diff}h`;
+        document.getElementById('int-res').innerHTML = `${display}${warnMsg}`;
+        document.getElementById('int-res').className = diff >= 0 ? 'result positive' : 'result negative';
     }
 
     function calculateWeek() {
-        let sum = 0; let underMinHours = false; let inputError = false;
-        const fields = document.querySelectorAll('.week-day');
-        
-        fields.forEach(i => {
-            let val = parseFloat(i.value || 0);
-            if(isNaN(val) || val > 24) { inputError = true; }
-            sum += Math.round(val * 100);
-            if (i.value !== "" && val < 4.0) { i.classList.add('input-warning'); underMinHours = true; } 
-            else { i.classList.remove('input-warning'); }
+        let total = 0;
+        ['mo', 'di', 'mi', 'do', 'fr'].forEach(d => {
+            const val = parseFloat(document.getElementById('w-' + d).value);
+            if (!isNaN(val)) total += val;
         });
-        
-        if(inputError) {
-            document.getElementById('week-res').innerHTML = 'Ungültige Eingabe!';
-            document.getElementById('week-res').className = 'result negative';
-            return;
-        }
-
-        sum = sum / 100;
-        let totalTarget = 38.5; let rest = Math.round((totalTarget - sum) * 100) / 100;
-        let resDiv = document.getElementById('week-res');
-        let warnMsg = underMinHours ? `<div class="warning-box" style="margin-top:5px;">Ein Tag liegt unter der Mindestarbeitszeit von 4 Std.!</div>` : "";
-
-        if (sum >= totalTarget) {
-            resDiv.className = 'result positive';
-            resDiv.innerHTML = `Eingetragen: <b>${sum.toFixed(2)}h</b> / 38.50h<br><b>Ziel erreicht! (${(sum - totalTarget) > 0 ? '+' + (sum - totalTarget).toFixed(2) : 'Punktlandung'})</b>${warnMsg}`;
-        } else {
-            resDiv.className = 'result neutral';
-            resDiv.innerHTML = `Eingetragen: <b>${sum.toFixed(2)}h</b><br>Noch offen für 38.5h: <b>${rest.toFixed(2)}h</b>${warnMsg}`;
-        }
-        updatePlaceholders();
-    }
-
-    function updatePlaceholders() {
-        let sum = 0; let emptyDaysCount = 0;
-        const fields = document.querySelectorAll('.week-day');
-        fields.forEach(i => { if (i.value === "") emptyDaysCount++; else sum += Math.round(parseFloat(i.value) * 100); });
-        sum = sum / 100;
-        let remainingHours = 38.5 - sum;
-        fields.forEach(i => {
-            if (i.value === "") {
-                if (remainingHours > 0 && emptyDaysCount > 0) i.placeholder = "z.B. " + (Math.round((remainingHours / emptyDaysCount) * 100) / 100).toFixed(2);
-                else i.placeholder = "z.B. 7.70";
-            } else i.placeholder = "";
-        });
+        const offen = Math.max(0, 38.5 - total).toFixed(2);
+        document.getElementById('week-res').innerHTML = `Eingetragen: ${total.toFixed(2)}h | Offen: ${offen}h`;
     }
 
     function handleConversion() {
-        const h = document.getElementById('conv-h').value; const m = document.getElementById('conv-m').value; const dec = document.getElementById('conv-dec').value;
-        let res = document.getElementById('dec-res');
+        const h = document.getElementById('conv-h').value;
+        const m = document.getElementById('conv-m').value;
+        const dec = document.getElementById('conv-dec').value;
+        const res = document.getElementById('dec-res');
         
-        if(h !== "" || m !== "") {
-            let hVal = parseInt(h||0, 10);
-            let mVal = parseInt(m||0, 10);
-            if(mVal > 59) { res.textContent = "Ungültige Min."; return; }
-            res.textContent = ((hVal * 60 + mVal) / 60).toFixed(2) + " Dezimalstunden";
-        } else if(dec !== "") {
-            let decVal = parseFloat(dec);
-            if(isNaN(decVal)) { res.textContent = "Ungültige Eingabe!"; return; }
-            let total = Math.round(decVal * 60);
-            res.textContent = Math.floor(total / 60) + ":" + String(total % 60).padStart(2,'0') + " h:mm";
-        } else res.textContent = "---";
-    }
-
-    window.onload = () => {
-        checkWeeklyReset();
-        
-        // 1. Hole alle gespeicherten Werte ab
-        const savedStart = localStorage.getItem('edeka_start') || '';
-        document.getElementById('start-time').value = savedStart;
-        document.getElementById('age-mode').value = localStorage.getItem('edeka_age') || 'adult';
-        ['mo','di','mi','do','fr'].forEach(d => document.getElementById('w-'+d).value = localStorage.getItem('edeka_'+d) || '');
-        
-        // 2. WICHTIG: Wenn eine Startzeit existiert, kopiere sie SOFORT in den ersten Arbeitsblock
-        if(savedStart !== '') {
-            const firstBlockStart = document.querySelector('.b-start');
-            if (firstBlockStart) {
-                firstBlockStart.value = savedStart;
-            }
+        if (h !== "" || m !== "") {
+            let total = parseInt(h || 0) + (parseInt(m || 0) / 60);
+            res.innerHTML = `Dezimalwert: ${total.toFixed(2)}`;
+        } else if (dec !== "") {
+            let totalMins = Math.round(parseFloat(dec) * 60);
+            let h = Math.floor(totalMins / 60);
+            let m = totalMins % 60;
+            res.innerHTML = `Zeit: ${h}:${String(m).padStart(2,'0')}`;
+        } else {
+            res.innerHTML = '---';
         }
-        
-        // 3. Erst wenn alles an seinem Platz ist, wird gerechnet
-        triggerGlobalRecalculation();
-        calculateWeek();
-    };
+    }
+    
+    checkWeeklyReset();
 </script>
 </body>
 </html>
