@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IT Arbeitszeit Rechner</title>
+    <title>Edeka Zeit-Assistent</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     
@@ -223,8 +223,8 @@
 
     <header class="custom-header">
         <div class="header-titles">
-            <h1>Arbeitszeit-Optimierung</h1>
-            <p>Dein Assistent für Zeit-Bilanz, Planung und Arbeitszeiten</p>
+            <h1>Edeka Zeit-Assistent</h1>
+            <p>Dein digitaler Leitfaden für Arbeitszeit, Pausenregelungen und Wochenplanung</p>
         </div>
         <div class="header-controls">
             <div class="header-select-box">
@@ -235,8 +235,7 @@
                 </select>
             </div>
             <div class="header-meta">
-                <div>Standort <span class="highlight">Würzburg</span> |
-                BV <span class="highlight">2026</span></div>
+                <div>Standort <span class="highlight">Würzburg</span> | BV <span class="highlight">2026</span></div>
                 <div class="author">Made by Paul Ziese</div>
             </div>
         </div>
@@ -249,11 +248,10 @@
                 <div class="info-details">Berechnet das voraussichtliche Ende basierend auf Gesetz, Alter und geplanten Pausen.</div>
                 
                 <label>Startzeit:</label>
-                <input type="text" id="start-time" tabindex="0" placeholder="z.B. 07:00 oder 7" onblur="formatTimeInput(this); saveStartData(this.value); calculateFeierabend();"
-                oninput="limitLength(this, 5)">
+                <input type="text" id="start-time" tabindex="0" placeholder="z.B. 07:00 oder 7" onblur="formatTimeInput(this); saveStartData(this.value); calculateFeierabend();" oninput="limitLength(this, 5)">
                 
                 <label>Tagessoll (Stunden):</label>
-                <select id="day-mode" tabindex="0" onchange="calculateFeierabend()">
+                <select id="day-mode" tabindex="0" onchange="syncSollTime(); calculateFeierabend();">
                     <option value="7.70">Standard-Vollzeit (7.70h)</option>
                     <option value="4.00">Mindestarbeitszeit BV (4.00h)</option>
                 </select>
@@ -277,7 +275,7 @@
                 <label>Arbeitsblöcke (Intervalle):</label>
                 <div id="dynamic-blocks-container">
                     <div class="block-row">
-                        <input type="text" class="b-start" tabindex="0" placeholder="07:00" onblur="formatTimeInput(this); calculateIntervalWork()" oninput="limitLength(this, 5)">
+                        <input type="text" class="b-start" tabindex="0" placeholder="07:00" onblur="formatTimeInput(this); saveStartData(this.value); calculateIntervalWork()" oninput="limitLength(this, 5)">
                         <span>bis</span>
                         <input type="text" class="b-end" tabindex="0" placeholder="12:00" onblur="formatTimeInput(this); calculateIntervalWork()" oninput="limitLength(this, 5)">
                         <button class="btn-delete-block" tabindex="-1" onclick="removeBlock(this)">✖</button>
@@ -299,20 +297,23 @@
         <div class="calculator">
             <div class="calc-content">
                 <h1>Wochen-Monitor</h1>
-                <div class="info-details">Trage deine Stunden für die Woche ein (z.B. 7.7). Die Vorschau zeigt an, wie viel offen ist und teilt Reststunden auf.</div>
+                <div class="info-details">Trage deine Stunden für die Woche ein. Die Vorschau zeigt an, wie viel offen ist und teilt Reststunden auf.</div>
                 
+                <label>Wochenziel (Stunden):</label>
+                <input type="number" id="weekly-target-input" tabindex="0" value="38.50" step="0.01" min="0" max="168" onfocus="saveWocheBackup();" oninput="limitLength(this, 6); saveData(); distributePlaceholders();">
+
                 <div class="week-grid">
-                    <label>Mo:</label><input type="number" tabindex="0" step="0.01" max="24" class="week-day" id="w-mo" placeholder="7.70" oninput="limitLength(this, 5); saveData(); distributePlaceholders();">
-                    <label>Di:</label><input type="number" tabindex="0" step="0.01" max="24" class="week-day" id="w-di" placeholder="7.70" oninput="limitLength(this, 5); saveData(); distributePlaceholders();">
-                    <label>Mi:</label><input type="number" tabindex="0" step="0.01" max="24" class="week-day" id="w-mi" placeholder="7.70" oninput="limitLength(this, 5); saveData(); distributePlaceholders();">
-                    <label>Do:</label><input type="number" tabindex="0" step="0.01" max="24" class="week-day" id="w-do" placeholder="7.70" oninput="limitLength(this, 5); saveData(); distributePlaceholders();">
-                    <label>Fr:</label><input type="number" tabindex="0" step="0.01" max="24" class="week-day" id="w-fr" placeholder="7.70" oninput="limitLength(this, 5); saveData(); distributePlaceholders();">
+                    <label>Mo:</label><input type="number" tabindex="0" step="0.01" max="24" class="week-day" id="w-mo" placeholder="7.70" onfocus="saveWocheBackup();" oninput="limitLength(this, 5); saveData(); distributePlaceholders();">
+                    <label>Di:</label><input type="number" tabindex="0" step="0.01" max="24" class="week-day" id="w-di" placeholder="7.70" onfocus="saveWocheBackup();" oninput="limitLength(this, 5); saveData(); distributePlaceholders();">
+                    <label>Mi:</label><input type="number" tabindex="0" step="0.01" max="24" class="week-day" id="w-mi" placeholder="7.70" onfocus="saveWocheBackup();" oninput="limitLength(this, 5); saveData(); distributePlaceholders();">
+                    <label>Do:</label><input type="number" tabindex="0" step="0.01" max="24" class="week-day" id="w-do" placeholder="7.70" onfocus="saveWocheBackup();" oninput="limitLength(this, 5); saveData(); distributePlaceholders();">
+                    <label>Fr:</label><input type="number" tabindex="0" step="0.01" max="24" class="week-day" id="w-fr" placeholder="7.70" onfocus="saveWocheBackup();" oninput="limitLength(this, 5); saveData(); distributePlaceholders();">
                 </div>
             </div>
             <div class="btn-group">
                 <button class="btn-reset" tabindex="0" onclick="resetWoche()" title="Woche leeren">✖</button>
                 <button class="btn-undo" tabindex="0" onclick="undoWoche()" title="Rückgängig">↩</button>
-                <button class="btn-main" tabindex="0" onclick="distributePlaceholders()">Berechnen</button>
+                <button class="btn-main" tabindex="0" onclick="saveWocheBackup(); distributePlaceholders()">Berechnen</button>
             </div>
             <div id="week-res" class="result neutral">Eingetragen: 0.00h | Offen: 38.50h</div>
         </div>
@@ -339,21 +340,27 @@
     </div>
 
 <script>
-    // --- NAVIGATIONS-LOGIK ---
+    // --- OPTIMIERTE NAVIGATIONS-LOGIK ---
     document.addEventListener('keydown', function(e) {
         if (['Enter', 'ArrowDown', 'ArrowRight', 'ArrowUp', 'ArrowLeft'].includes(e.key)) {
-            const allFocusable = Array.from(document.querySelectorAll('input, select, button'));
+            const active = document.activeElement;
+            if (!active || active.tagName === 'BODY') return;
+
+            const parentCalc = active.closest('.calculator') || active.closest('.custom-header');
+            if (!parentCalc) return;
+
+            const allFocusable = Array.from(parentCalc.querySelectorAll('input, select, button'));
             const focusable = allFocusable.filter(el =>
                 el.tabIndex !== -1 && 
                 el.offsetParent !== null && 
                 !el.classList.contains('btn-delete-block')
             );
-            const currentIndex = focusable.indexOf(document.activeElement);
+            const currentIndex = focusable.indexOf(active);
+            if (currentIndex === -1) return;
 
             if (e.key === 'Enter') {
-                const active = document.activeElement;
                 if (active.tagName === 'INPUT' || active.tagName === 'SELECT') {
-                    if (currentIndex > -1 && currentIndex < focusable.length - 1) {
+                    if (currentIndex < focusable.length - 1) {
                         e.preventDefault();
                         focusable[currentIndex + 1].focus();
                     }
@@ -376,7 +383,6 @@
     let backupIstZeit = null;
     let backupWoche = null;
     let backupUmwandler = null;
-
     function limitLength(input, maxLength) {
         if (input.value.length > maxLength) {
             input.value = input.value.slice(0, maxLength);
@@ -423,7 +429,6 @@
         if(isNaN(h) || isNaN(m) || h > 23 || m > 59) return null;
         return Math.round(h * 60 + m); 
     };
-
     function getWeekNumber(d) {
         d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
         d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay()||7));
@@ -446,6 +451,7 @@
 
     function saveData() {
         localStorage.setItem('edeka_age', document.getElementById('age-mode').value);
+        localStorage.setItem('edeka_weekly_target', document.getElementById('weekly-target-input').value);
         localStorage.setItem('edeka_mo', document.getElementById('w-mo').value);
         localStorage.setItem('edeka_di', document.getElementById('w-di').value);
         localStorage.setItem('edeka_mi', document.getElementById('w-mi').value);
@@ -454,6 +460,11 @@
     }
 
     function loadWeekData() {
+        const savedTarget = localStorage.getItem('edeka_weekly_target');
+        if (savedTarget) {
+            document.getElementById('weekly-target-input').value = savedTarget;
+        }
+
         const days = ['mo', 'di', 'mi', 'do', 'fr'];
         days.forEach(day => {
             const val = localStorage.getItem('edeka_' + day);
@@ -474,6 +485,12 @@
     function saveStartData(val) {
         const data = { value: val, timestamp: Date.now() };
         localStorage.setItem('edeka_start_time', JSON.stringify(data));
+        
+        const startInput = document.getElementById('start-time');
+        const firstBStart = document.querySelector('.b-start');
+        if (startInput && startInput.value !== val) startInput.value = val;
+        if (firstBStart && firstBStart.value !== val) firstBStart.value = val;
+        triggerGlobalRecalculation();
     }
 
     function loadStartData() {
@@ -481,7 +498,11 @@
         if (!raw) return;
         const data = JSON.parse(raw);
         if (Date.now() - data.timestamp < 12 * 60 * 60 * 1000) {
-            document.getElementById('start-time').value = data.value;
+            const startInput = document.getElementById('start-time');
+            const firstBStart = document.querySelector('.b-start');
+            if (startInput) startInput.value = data.value;
+            if (firstBStart) firstBStart.value = data.value;
+            triggerGlobalRecalculation();
         } else {
             localStorage.removeItem('edeka_start_time');
         }
@@ -492,9 +513,16 @@
         calculateIntervalWork();
     }
 
-    function clearDecField() { document.getElementById('conv-dec').value = ""; }
-    function clearHmFields() { document.getElementById('conv-h').value = "";
-        document.getElementById('conv-m').value = ""; }
+    function syncSollTime() {
+        const selectedSoll = document.getElementById('day-mode').value;
+        document.getElementById('soll-input').value = selectedSoll;
+        calculateIntervalWork();
+    }
+
+    function clearDecField() { document.getElementById('conv-dec').value = "";
+    }
+    function clearHmFields() { document.getElementById('conv-h').value = ""; document.getElementById('conv-m').value = "";
+    }
 
     function addBlock() {
         saveIstBackup();
@@ -531,11 +559,14 @@
             className: document.getElementById('end-res').className
         };
         document.getElementById('start-time').value = "";
+        const firstBStart = document.querySelector('.b-start');
+        if (firstBStart) firstBStart.value = "";
         document.getElementById('day-mode').selectedIndex = 0;
         document.getElementById('planned-break').value = "30";
         document.getElementById('end-res').className = 'result neutral';
         document.getElementById('end-res').innerHTML = '---';
         localStorage.removeItem('edeka_start_time');
+        triggerGlobalRecalculation();
     }
     
     function undoFeierabend() {
@@ -564,11 +595,11 @@
         const container = document.getElementById('dynamic-blocks-container');
         container.innerHTML = `
             <div class="block-row">
-                <input type="text" class="b-start" tabindex="0" placeholder="07:00" onblur="formatTimeInput(this); calculateIntervalWork()" oninput="limitLength(this, 5)">
+                <input type="text" class="b-start" tabindex="0" placeholder="07:00" onblur="formatTimeInput(this); saveStartData(this.value); calculateIntervalWork()" oninput="limitLength(this, 5)">
                 <span>bis</span>
                 <input type="text" class="b-end" tabindex="0" placeholder="12:00" onblur="formatTimeInput(this); calculateIntervalWork()" oninput="limitLength(this, 5)">
                 <button class="btn-delete-block" tabindex="-1" onclick="removeBlock(this)">✖</button>
-           </div>
+            </div>
         `;
         document.getElementById('soll-input').value = "7.70";
         document.getElementById('int-res').className = 'result neutral';
@@ -580,13 +611,13 @@
         const container = document.getElementById('dynamic-blocks-container');
         container.innerHTML = "";
         
-        backupIstZeit.blocks.forEach(block => {
+        backupIstZeit.blocks.forEach((block, idx) => {
             const div = document.createElement('div');
             div.className = 'block-row';
             div.innerHTML = `
-                <input type="text" class="b-start" tabindex="0" value="${block.start}" onblur="formatTimeInput(this); calculateIntervalWork()" oninput="limitLength(this, 5)">
+                <input type="text" class="b-start" tabindex="0" value="${block.start}" onblur="formatTimeInput(this); ${idx === 0 ? 'saveStartData(this.value);' : ''} calculateIntervalWork()" oninput="limitLength(this, 5)">
                 <span>bis</span>
-         <input type="text" class="b-end" tabindex="0" value="${block.end}" onblur="formatTimeInput(this); calculateIntervalWork()" oninput="limitLength(this, 5)">
+                <input type="text" class="b-end" tabindex="0" value="${block.end}" onblur="formatTimeInput(this); calculateIntervalWork()" oninput="limitLength(this, 5)">
                 <button class="btn-delete-block" tabindex="-1" onclick="removeBlock(this)">✖</button>
             `;
             container.appendChild(div);
@@ -596,14 +627,24 @@
         document.getElementById('int-res').className = backupIstZeit.className;
     }
 
-    // NEU: Dynamische Berechnung der grauen Vorschlagswerte (Placeholders)
-    function distributePlaceholders() {
-        const target = 38.5; // Wochenziel
-        const dayIds = ['w-mo', 'w-di', 'w-mi', 'w-do', 'w-fr'];
+    function saveWocheBackup() {
+        backupWoche = {
+            target: document.getElementById('weekly-target-input').value,
+            mo: document.getElementById('w-mo').value,
+            di: document.getElementById('w-di').value,
+            mi: document.getElementById('w-mi').value,
+            do: document.getElementById('w-do').value,
+            fr: document.getElementById('w-fr').value,
+            html: document.getElementById('week-res').innerHTML,
+            className: document.getElementById('week-res').className
+        };
+    }
 
+    function distributePlaceholders() {
+        const target = parseFloat(document.getElementById('weekly-target-input').value) || 38.5;
+        const dayIds = ['w-mo', 'w-di', 'w-mi', 'w-do', 'w-fr'];
         let currentSum = 0;
         let emptyInputs = [];
-
         dayIds.forEach(id => {
             const el = document.getElementById(id);
             const val = parseFloat(el.value);
@@ -613,7 +654,6 @@
                 emptyInputs.push(el);
             }
         });
-
         if (emptyInputs.length > 0) {
             const remainingHours = Math.max(0, target - currentSum);
             const distributionValue = (remainingHours / emptyInputs.length).toFixed(2);
@@ -623,32 +663,25 @@
             });
         }
 
-        // Berechnet direkt im Anschluss die "Offen/Eingetragen"-Anzeige neu
         calculateWeek();
     }
 
     function resetWoche() {
-        backupWoche = {
-            mo: document.getElementById('w-mo').value,
-            di: document.getElementById('w-di').value,
-            mi: document.getElementById('w-mi').value,
-            do: document.getElementById('w-do').value,
-            fr: document.getElementById('w-fr').value,
-            html: document.getElementById('week-res').innerHTML,
-            className: document.getElementById('week-res').className
-        };
+        saveWocheBackup();
         ['mo', 'di', 'mi', 'do', 'fr'].forEach(day => {
             const field = document.getElementById('w-' + day);
             field.value = "";
             field.placeholder = "7.70";
             field.classList.remove('input-warning');
         });
+        document.getElementById('weekly-target-input').value = "38.50";
         saveData(); 
         distributePlaceholders(); 
     }
 
     function undoWoche() {
         if (!backupWoche) return;
+        document.getElementById('weekly-target-input').value = backupWoche.target;
         document.getElementById('w-mo').value = backupWoche.mo;
         document.getElementById('w-di').value = backupWoche.di;
         document.getElementById('w-mi').value = backupWoche.mi;
@@ -731,6 +764,7 @@
         const starts = document.querySelectorAll('.b-start');
         const ends = document.querySelectorAll('.b-end');
         const soll = parseFloat(document.getElementById('soll-input').value);
+        const ageMode = document.getElementById('age-mode').value;
 
         let activeIntervals = [];
         let inputError = false;
@@ -760,8 +794,11 @@
         }
 
         activeIntervals.sort((a,b) => a.start - b.start);
+        let totalBruttoMin = activeIntervals[activeIntervals.length - 1].end - activeIntervals[0].start;
         let totalNettoMin = 0;
         activeIntervals.forEach(block => totalNettoMin += (block.end - block.start));
+        let actualBreakMin = totalBruttoMin - totalNettoMin;
+        if(actualBreakMin < 0) actualBreakMin = 0;
         let totalNettoH = Math.round(totalNettoMin / 60 * 100) / 100;
         if (totalNettoH > 10) {
             document.getElementById('int-res').innerHTML = `Netto: ${totalNettoH}h (Achtung: Gesetzliches Limit von 10h überschritten!)`;
@@ -769,11 +806,28 @@
             return;
         }
 
-	let diff = Math.round((totalNettoH - soll) * 100) / 100;
-        let display = `Netto: ${totalNettoH}h | Differenz: ${diff > 0 ? '+' : ''}${diff}h`;
+        let reqBreakMin = 0;
+        if (ageMode === 'minor') {
+            if (totalNettoH > 6.0) reqBreakMin = 60;
+            else if (totalNettoH > 4.5) reqBreakMin = 30;
+        } else {
+            if (totalNettoH > 9.0) reqBreakMin = 45;
+            else if (totalNettoH > 6.0) reqBreakMin = 30;
+        }
+
+        let breakWarnMsg = "";
+        if (actualBreakMin < reqBreakMin) {
+            if (ageMode === 'minor') {
+                breakWarnMsg = `<div class="warning-box">Achtung: Jugendliche benötigen ab 6h Nettozeit min. 60 Min. Pause (erfasst: ${actualBreakMin} Min.)!</div>`;
+            } else {
+                breakWarnMsg = `<div class="warning-box">Achtung: Gesetzliche Mindestpause unterschritten! Erforderlich: ${reqBreakMin} Min. (erfasst: ${actualBreakMin} Min.)</div>`;
+            }
+        }
+
+        let diff = Math.round((totalNettoH - soll) * 100) / 100;
+        let display = `Netto: ${totalNettoH}h | Differenz: ${diff > 0 ? '+' : ''}${diff}h${breakWarnMsg}`;
         document.getElementById('int-res').innerHTML = display;
-        document.getElementById('int-res').className = diff >= 0 ?
-        'result positive' : 'result negative';
+        document.getElementById('int-res').className = diff >= 0 ? 'result positive' : 'result negative';
     }
 
     function calculateWeek() {
@@ -782,8 +836,17 @@
             const val = parseFloat(document.getElementById('w-' + d).value);
             if (!isNaN(val)) total += val;
         });
-        const offen = Math.max(0, 38.5 - total).toFixed(2);
-        document.getElementById('week-res').innerHTML = `Eingetragen: ${total.toFixed(2)}h | Offen: ${offen}h`;
+        const target = parseFloat(document.getElementById('weekly-target-input').value) || 38.5;
+        let diff = Math.round((total - target) * 100) / 100;
+        
+        let resField = document.getElementById('week-res');
+        if (total >= target) {
+            resField.className = 'result positive';
+            resField.innerHTML = `Eingetragen: ${total.toFixed(2)}h | Differenz: +${diff.toFixed(2)}h`;
+        } else {
+            resField.className = 'result negative';
+            resField.innerHTML = `Eingetragen: ${total.toFixed(2)}h | Offen: ${Math.abs(diff).toFixed(2)}h (-${Math.abs(diff).toFixed(2)}h)`;
+        }
     }
 
     function handleConversion() {
@@ -807,8 +870,8 @@
     // Initialisierung
     checkWeeklyReset();
     loadWeekData();
+    loadAgeData(); 
     loadStartData();
-    loadAgeData(); // Hier wird der gespeicherte Wert geladen
 </script>
 </body>
 </html>
