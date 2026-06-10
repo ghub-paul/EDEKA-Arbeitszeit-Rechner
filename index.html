@@ -54,6 +54,31 @@
             color: #555;
         }
 
+        /* NEU: Styles für die mittige Datumsanzeige */
+        .header-center-info {
+            text-align: center;
+            flex-grow: 1; /* Lässt es den verfügbaren Platz einnehmen, um mittig zu erscheinen */
+            font-size: 1em; /* Moderate Größe */
+            color: #333;
+            font-weight: 500;
+            line-height: 1.4;
+            white-space: nowrap; /* Verhindert Zeilenumbrüche */
+        }
+        .header-center-info .highlight {
+            font-weight: 600;
+            color: #000;
+        }
+        /* Media Query für kleine Bildschirme */
+        @media (max-width: 768px) {
+            .header-center-info {
+                order: 3; /* Im mobilen Layout ggf. nach unten verschieben */
+                width: 100%;
+                margin-top: 10px;
+                border-top: 1px solid rgba(0,0,0,0.1);
+                padding-top: 10px;
+            }
+        }
+
         .header-controls {
             display: flex;
             align-items: center;
@@ -225,6 +250,10 @@
         <div class="header-titles">
             <h1>Edeka Zeit-Assistent</h1>
             <p>Dein digitaler Leitfaden für Arbeitszeit, Pausenregelungen und Wochenplanung</p>
+        </div>
+        <!-- NEU: Container für Datum, Wochentag und Kalenderwoche -->
+        <div class="header-center-info" id="current-date-info">
+            <!-- Hier werden die Informationen per JavaScript eingefügt -->
         </div>
         <div class="header-controls">
             <div class="header-select-box">
@@ -436,6 +465,21 @@
         d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay()||7));
         var startOfYear = new Date(Date.UTC(d.getUTCFullYear(),0,1));
         return d.getUTCFullYear() + "-" + Math.ceil(( ( (d - startOfYear) / 86400000) + 1)/7);
+    }
+
+    // NEU: Funktion zum Anzeigen von Tag, Datum und KW
+    function displayCurrentDateInfo() {
+        const dateInfoDiv = document.getElementById('current-date-info');
+        if (!dateInfoDiv) return;
+
+        const now = new Date();
+        const optionsDate = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        const formattedDate = now.toLocaleDateString('de-DE', optionsDate); // z.B. "Mittwoch, 10. Juni 2026"
+
+        const weekNum = getWeekNumber(now).split('-')[1]; // Extrahiert die KW-Nummer
+        const displayKW = `KW ${weekNum}`;
+
+        dateInfoDiv.innerHTML = `<span class="highlight">${formattedDate}</span> | <span class="highlight">${displayKW}</span>`;
     }
 
     function checkWeeklyReset() {
@@ -931,6 +975,7 @@
     loadAgeData();
     loadStartData();
     loadBilanzData();
+    displayCurrentDateInfo(); // NEU: Funktion beim Laden aufrufen
 </script>
 </body>
 </html>
